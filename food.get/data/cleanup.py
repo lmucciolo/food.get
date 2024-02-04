@@ -42,7 +42,7 @@ def clean_snap_retailer_data():
         A list of the businesses and all their cleaned data components from the portal
     """
     # may need to think through not calling this function each time?
-    snap_raw_data = import_business_license_data()
+    snap_raw_data = import_snap_retailers_data()
     # extracting the 'features' key and converting it to a list
     snap_retailer_list = snap_raw_data.get('features', [])
 

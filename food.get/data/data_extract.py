@@ -36,7 +36,7 @@ def import_business_liscense_data():
 
     return business_liscense_data
 
-def import_snap_retailers():
+def import_snap_retailers_data():
     """
     This function loads the data from the USDA Food and Nutrition Service portal on the 
     location for currently authorized SNAP retailers.
