@@ -35,4 +35,19 @@ def import_business_liscense_data():
     business_liscense_data = json.loads(response.text)
 
     return business_liscense_data
-    
+
+def import_snap_retailers():
+    """
+    This function loads the data from the USDA Food and Nutrition Service portal on the 
+    location for currently authorized SNAP retailers.
+
+    Returns:
+        A list of the retailers and all their raw data components from the portal
+    """
+    # API Call of SNAP retailers using Turk's Take 1 from notes
+    url = "https://services1.arcgis.com/RLQu0rK7h4kbsBq5/arcgis/rest/services/snap_retailer_location_data/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
+    response = requests.get(url)
+    snap_retailer_data = json.loads(response.text)
+
+    return snap_retailer_data
+
