@@ -16,3 +16,23 @@ def import_atlas_data(year):
     Atlas_Filtered['YearLabel'] = year
 
     Atlas_Sets = pd.concat([Atlas_Sets, Atlas_Filtered])
+
+# Stacy additions 2/4/24
+import requests
+import json
+
+def import_business_liscense_data():
+    """
+    This function loads the data from the Chicago data portal on business liscenses
+    and returns a list of all the raw data.
+
+    Returns:
+        A list of the businesses and all their raw data components from the portal
+    """
+    # API Call of Business Liscense for Grocery Stores using Turk's Take 1 from notes
+    url = "https://data.cityofchicago.org/resource/r5kz-chrr.json"
+    response = requests.get(url)
+    business_liscense_data = json.loads(response.text)
+
+    return business_liscense_data
+    
