@@ -1,3 +1,15 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: data_extract.py
+Authors: Danielle Rosenthal and Stacy George
+Note: 
+    * Danielle created import_atlas_data
+    * Stacy created import_business_liscense_data and import_snap_retailers_data
+
+Description:
+    This file imports all the raw data from their source
+"""
 import pandas as pd
 
 relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 'Pop2010', 'OHU2010', 'lapop1',

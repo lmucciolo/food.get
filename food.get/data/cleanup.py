@@ -1,3 +1,14 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: cleanup.py
+Authors: Stacy George
+Note: 
+    * Stacy created clean_business_liscense and clean_snap_retailer_data
+
+Description:
+    This file cleans all the raw data
+"""
 from data_extract.data_extract import import_business_license_data
 
 # Stacy changes on 2/4/24
