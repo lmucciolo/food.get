@@ -1,3 +1,11 @@
+[tool.poetry]
+name = "food.get"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "food.get"}]
+
 [tool.poetry.dependencies]
 python = "^3.8"
 lxml = "^5.1"
