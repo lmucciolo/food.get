@@ -55,20 +55,15 @@ def clean_snap_retailer_data():
     Returns:
         A pandas dataframe of the businesses and all their cleaned data components from the portal
     """
-    # Extract the 'features' key and convert it to a list
-    snap_retailer_list = SNAP_RAW.get('features', [])
-
     # Initialize an empty list to store dictionaries
     cleaned_snap_retailer_data = []
 
-    for retailer_entry in snap_retailer_list:
+    for retailer_entry in SNAP_RAW:
         # Access the 'attributes' key within each entry
         attributes = retailer_entry.get('attributes', {})
 
-        # Check if lowercase 'City' is 'chicago' and 'State' is 'IL'
-        if attributes.get('City', '').lower() == 'chicago' and attributes.get('State', '').upper() == 'IL':
-            # Append the attributes dictionary to the result list
-            cleaned_snap_retailer_data.append(attributes)
+        # Append the attributes dictionary to the result list
+        cleaned_snap_retailer_data.append(attributes)
 
     # Convert the list of dictionaries to a Pandas DataFrame
     cleaned_snap_retailer_df = pd.DataFrame(cleaned_snap_retailer_data)
