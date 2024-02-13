@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-packages = [{include = "food.get"}]
+packages = [{include = "food_get"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -19,6 +19,7 @@ pandas = "^2.2.0"
 numpy = "^1.26.4"
 plotly = "^5.18.0"
 folium = "^0.15.1"
+ipykernel = "^6.29.2"
 
 [build-system]
 requires = ["poetry-core"]
