@@ -33,7 +33,7 @@ def make_api_request(url, params = None):
     return json.loads(response.text)
 
 
-def import_business_liscense_data(base_url, limit = 1000, offset = 0):
+def import_business_license_data(base_url, limit = 1000, offset = 0):
     """
     Retrieve business license data from the Chicago data portal.
 

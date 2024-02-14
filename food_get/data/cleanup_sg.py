@@ -4,13 +4,13 @@ Team: food.get
 File Name: cleanup.py
 Authors: Stacy George
 Note: 
-    * Stacy created clean_business_liscense and clean_snap_retailer_data
+    * Stacy created clean_business_license and clean_snap_retailer_data
 
 Description:
     This file cleans all the raw data
 """
 import pandas as pd
-from .data_extract_sg import import_business_license_data
+from food_get.data.data_extract_sg import import_business_license_data, import_snap_retailers_data
 
 LISCENSE_RAW = import_business_license_data()
 SNAP_RAW = import_snap_retailers_data()
@@ -69,3 +69,4 @@ def clean_snap_retailer_data():
     cleaned_snap_retailer_df = pd.DataFrame(cleaned_snap_retailer_data)
 
     return cleaned_snap_retailer_df
+
