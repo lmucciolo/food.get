@@ -10,14 +10,17 @@ Description:
     This file generates the low-access and low-income metrics by census tract
 """
 from ..data.data_cleanup_sg import clean_business_liscense
+from ..data.data_extract_census import final_10_20_tracts
 import geopandas as gpd
+import itertools
+
 M_TO_MILES = 1609.34
 
 # pull in cleaned grocery store data with merged SNAP data
-cleaned_grocery = clean_business_license()
+cleaned_grocery = clean_business_liscense()
 
-# pull in census tract data for 2020 as a geo dataframe
-#tracts_2020 = 
+# pull in census tract data frame for 2020 as a geo dataframe
+tracts_2020 = final_10_20_tracts()
 
 def create_buffers():
     """
@@ -27,9 +30,6 @@ def create_buffers():
         cleaned_grocery,
         geometry=gpd.points_from_xy(cleaned_grocery.long, cleaned_grocery.lat),
         crs="EPSG:4326") # IS 4326 THE CORRECT CRS?
-    
-    # this will drop any stores that are not within the Chicago tracts
-    #stores_with_tracts = stores_gdf.sjoin(census_tracts_2020, how="inner")
 
     # create 1/2 mile buffers around each grocery store
     # geometry is now a column of polygons
@@ -43,37 +43,65 @@ def find_intersections(stores_gdf):
     tracts_with_buffers = gpd.sjoin_nearest(tracts_2020, stores_gdf, distance_col = "distances")
 
     for id in tracts_2020["tract_id"]:
-        intersection_dict = {}
+        intersection_series = gpd.GeoSeries()
         current_tract = tracts_with_buffers[tracts_with_buffers["tract_id"] == id]
 
         for store in current_tract["store_id"]:
-            current_store = stores_gdf["gs_id" == store]["buffer"]
+            current_store = stores_gdf[stores_gdf["gs_id"] == store]["geometry"]
             # find intersection of current store with current tract
             intersection = current_tract.overlay(current_store, how="intersection")
             # add intersection to dictionary
-            intersection_dict[store] = intersection
+            intersection_series.append(intersection)
+            # find ratio of grocery store buffers to tract area
+            find_ratio(id, intersection_series)
 
+    identify_low_access()
+    identify_low_income()
 
+    return tracts_2020
 
-def find_areas():
+def find_ratio(id, intersection_series):
     """
     """
-    stores_with_tracts = merge_stores_with_tracts()
+    # calculate area of intersecting buffers and tracts
+    tract_area = tracts_2020[tracts_2020["tract_id"] == id]["geometry"].area()
+    total_buffer_area = intersection_series.area().sum()
 
-    # calculate area of buffers and tracts
-    stores_with_tracts["buffer_area"] = stores_with_tracts["buffer"].area()
-    stores_with_tracts["tract_area"] = stores_with_tracts["tract"].area()
+    repeating_areas = 0
 
-    for _, row in stores_with_tracts.iterrows():
-        row["store_intersection"] = 
+    # find areas of intersecting buffers to subtract from total area
+    for i, polygon1 in enumerate(intersection_series[:-1]):
+        for polygon2 in intersection_series[i+1:]:
+            repeating_areas += polygon1.overlay(polygon2, how="intersection").area()
 
-    return stores_with_tracts
+    # find ratio of grocery stores within 1/2 mile radius to tract area and
+    # remove intersections between buffers
+    store_tract_ratio = (total_buffer_area - repeating_areas)/tract_area
+
+    tracts_2020[tracts_2020["tract_id"] == id]["ratio"] = store_tract_ratio
+
+    return None
 
 
+def identify_low_access():
+    """
+    If less than ⅔ of the census tract is within a ½ mile of a grocery store 
+    then tract is considered low-access.
+    """
+    if tracts_2020["ratio"] < (2/3):
+        tracts_2020["low_access"] = 1
+    else:
+        tracts_2020["low_access"] = 0
 
-def create_low_income_metric():
+    return None
+
+
+def identify_low_income():
     """
     """
+    # merge tracts dataframe with income data frame
+
+    # if census tract poverty rate >20% then low-income
 
     return None
 
