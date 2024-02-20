@@ -4,7 +4,6 @@ Team: food.get
 File Name: data_extract.py
 Authors: Danielle Rosenthal and Stacy George
 Note: 
-    * Danielle created import_atlas_data
     * Stacy created import_business_liscense_data and import_snap_retailers_data
 
 Description:
@@ -31,48 +30,6 @@ def make_api_request(url, params = None):
     print(f"Status Code: {response.status_code}")
     response.raise_for_status()
     return json.loads(response.text)
-
-
-def import_business_license_data(base_url, limit = 1000, offset = 0):
-    """
-    Retrieve business license data from the Chicago data portal.
-
-    Args:
-        base_url (str): The base URL of the API endpoint.
-        limit (int): The number of results to return in each batch (default is 1000).
-        offset (int): The index of the result array to start the returned list of results (default is 0).
-
-    Returns:
-        list: A list containing raw data components of businesses from the portal.
-    """
-    base_url = "https://data.cityofchicago.org/resource/r5kz-chrr.json"
-    params = {'$limit': limit,
-             '$offset': offset
-             }
-
-    business_license_data = make_api_request(base_url, params = params)
-
-    # check if there are more results to fetch
-    while business_license_data:
-        # process the current batch of results
-        # increment offset for the next batch
-        offset += limit
-        # update parameters for the next API call
-        params = {'$limit': limit, '$offset': offset}
-
-        # make the next API request
-        batch_data = make_api_request(base_url, params = params)
-
-        # extend the list with the new batch
-        business_license_data.extend(batch_data)
-
-        # check if there are more results to fetch
-        if not batch_data:
-            break
-
-        time.sleep(0.1)
-
-    return business_license_data
 
 
 def import_snap_retailers_data():
@@ -122,3 +79,15 @@ def import_snap_retailers_data():
         time.sleep(0.1)
 
     return snap_retailer_data_lst
+
+def import_grocery_store_data():
+    """
+    This function loads the data from a Chicago data portal csv of Grocery stores from 2020.
+
+    Returns:
+        A pandas dataframe of Chicago grocery detail's features.
+    """
+    grocery_store_df = pd.read_csv('/Users/stacygeorge/Downloads/Grocery_Store_Status_20240219.csv')
+
+    return grocery_store_df
+
