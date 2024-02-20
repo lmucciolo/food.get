@@ -9,17 +9,11 @@ Note:
 Description:
     This file generates the low-access and low-income metrics by Census tract.
 """
-from ..data.data_cleanup_sg import clean_business_liscense
-from ..data.data_extract_census import final_10_20_tracts
+from ..data.cleanup_sg import clean_business_liscense
+from ..data.data_extract_census import restrict_tract_to_shore
 import geopandas as gpd
 
 M_TO_MILES = 1609.34
-
-# pull in cleaned grocery store data with merged SNAP data
-cleaned_grocery = clean_business_liscense()
-
-# pull in census tract data frame for 2020 as a geo dataframe
-tracts_2020 = final_10_20_tracts()
 
 
 def create_buffers():
@@ -30,17 +24,21 @@ def create_buffers():
     Returns:
         GeoDataFrame of grocery store locations and the geometry of their buffers
     """
+    # pull in cleaned grocery store data with merged SNAP data
+    cleaned_grocery = clean_business_liscense()
+
     # read in grocery store data as points
     stores_gdf = gpd.GeoDataFrame(
         cleaned_grocery,
         geometry=gpd.points_from_xy(cleaned_grocery.long, cleaned_grocery.lat),
-        crs="EPSG:4326") # IS 4326 THE CORRECT CRS?
+        crs="EPSG:4326") # IS 4326 THE CORRECT CRS? # ASK STACY FOR projection?
 
     # create ½ mile buffers around each grocery store
     # geometry is now a column of buffer polygons
     stores_gdf["geometry"] = stores_gdf.buffer(0.5*M_TO_MILES)
 
     return stores_gdf
+
 
 def find_intersections(stores_gdf):
     """
@@ -60,6 +58,8 @@ def find_intersections(stores_gdf):
         ratio of a tract's area to grocery store buffers inside of the tract, 
         and flags for whether a tract is low-access or low-income.  
     """
+    # pull in census tract data frame for 2020 as a geo dataframe
+    tracts_2020 = restrict_tract_to_shore()
     # find all buffers that are contained within a tract
     tracts_with_buffers = gpd.sjoin_nearest(tracts_2020, stores_gdf)
 
@@ -76,14 +76,15 @@ def find_intersections(stores_gdf):
             intersection_series.append(intersection)
 
         # find ratio of grocery store buffers to tract area
-        find_ratio(id, intersection_series)
+        tracts_with_ratios = find_ratio(id, intersection_series, tracts_2020)
 
-    identify_low_access()
-    identify_low_income()
+    tracts_with_access_label = identify_low_access(tracts_with_ratios)
+    tracts_with_all_labels = identify_low_income(tracts_with_access_label)
 
-    return tracts_2020
+    return tracts_with_all_labels
 
-def find_ratio(id, intersection_series):
+
+def find_ratio(id, intersection_series, tracts_gdf):
     """
     This function calculates the ratio of a tract's area to grocery store 
     buffers inside of the tract. It first finds the tract area and total buffer
@@ -95,10 +96,15 @@ def find_ratio(id, intersection_series):
         id (string): a Census tract identifier
         intersection_series (GeoSeries): a series of intersections (polygons) of
             grocery store buffers within contained within a tract
+        tracts_gdf (GeoDataFrame): contains all tract information and boundaries
+
+    Returns:
+        A GeoDataFrame of 2020 Census tracts with a new column of the ratio of
+        grocery stores to total area (corresponding to the given tract ID)
 
     """
     # calculate area of intersecting buffers and tracts
-    tract_area = tracts_2020[tracts_2020["tract_id"] == id]["geometry"].area()
+    tract_area = tracts_gdf[tracts_gdf["tract_id"] == id]["geometry"].area()
     total_buffer_area = intersection_series.area().sum()
 
     repeating_areas = 0
@@ -112,33 +118,49 @@ def find_ratio(id, intersection_series):
     # remove intersections between buffers
     store_tract_ratio = (total_buffer_area - repeating_areas)/tract_area
 
-    tracts_2020[tracts_2020["tract_id"] == id]["ratio"] = store_tract_ratio
+    tracts_gdf[tracts_gdf["tract_id"] == id]["ratio"] = store_tract_ratio
 
-    return None
+    return tracts_gdf
 
 
-def identify_low_access():
+def identify_low_access(tracts_with_ratios):
     """
     This function identifies 2020 Census tracts as low-access. If less than ⅔ of
     the census tract is within a ½ mile of a grocery store then the tract is 
     considered low-access.
+
+    Inputs:
+        tracts_with_ratios (GeoDataFrame): contains all tract information and
+            boundaries, as well as access ratios
+            
+    Returns:
+        A GeoDataFrame of 2020 Census tracts with a low_access indiciator column
+
     """
-    if tracts_2020["ratio"] < (2/3):
-        tracts_2020["low_access"] = 1
+    if tracts_with_ratios["ratio"] < (2/3):
+        tracts_with_ratios["low_access"] = 1
     else:
-        tracts_2020["low_access"] = 0
+        tracts_with_ratios["low_access"] = 0
 
-    return None
+    return tracts_with_ratios
 
 
-def identify_low_income():
+def identify_low_income(tracts_with_access_label):
     """
     This function identifies 2020 Census tracts as low-income. If the Census
     tract pverty rate is greater than 20 percent, then the tract is considered
     low-access.
+
+    Inputs:
+        tracts_with_access_label (GeoDataFrame): contains all tract information 
+            and boundaries and access label
+
+    Returns:
+        A GeoDataFrame of 2020 Census tracts with a low_income indiciator column
+
     """
     # merge tracts dataframe with income data frame
 
     # if census tract poverty rate >20% then low-income
 
-    return None
+    return tracts_with_access_label
