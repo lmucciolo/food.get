@@ -10,39 +10,33 @@ Description:
     This file cleans all the raw data
 """
 import pandas as pd
-from food_get.data.data_extract_sg import import_business_license_data, import_snap_retailers_data
+from food_get.data.data_extract_sg import import_grocery_store_data, import_snap_retailers_data
 
-LISCENSE_RAW = import_business_license_data()
+GROCERY_RAW = import_grocery_store_data()
 SNAP_RAW = import_snap_retailers_data()
 
-def clean_business_liscense():
+MEMBERSHIP_STORES = ["Costco", "Sam's Club", "BJ's Wholesale Club"]
+
+def clean_grocery_stores():
     """
-    This function cleans the list of the businesses and all their raw data components from the portal
+    This function cleans the data frame of grocery stores
 
-    * Consolidate the data to 'city','license_id','legal_name','doing_business_as_name',
-        'application_type', 'license_description','location' 
-    * Only keep rows where 'license_description' = "Retail Food Establishment"
-
+    * Only keep rows where groceries are not membership stores
+    * Format to have a Lat and Long column
+    * Lowercase column names and replace spaces with underscores
 
     Returns:
         A pandas dataframe of the businesses and all their cleaned data components from the portal
-    """    
-    business_liscense_columns = ['city','license_id','legal_name','doing_business_as_name',
-                                 'application_type', 'license_description','location' ]
-    
-    cleaned_business_liscense_data = []
+    """
+        
+    no_membership = GROCERY_RAW[~GROCERY_RAW['Store Name'].isin(MEMBERSHIP_STORES)]
+    open_stores = no_membership[no_membership['New status'] == 'OPEN']
+    open_stores[['Longitude', 'Latitude']] = open_stores['Location'].str.extract(r'POINT \(([-+]?\d*\.\d+) ([-+]?\d*\.\d+)\)')
+    open_stores = open_stores.drop('Location', axis=1)
+    open_stores = open_stores.rename(columns=lambda x: x.lower().replace(' ', '_'))
 
-    for business in LISCENSE_RAW:
-        # check if 'license_description' is "Retail Food Establishment"
-        if business.get('license_description') == "Retail Food Establishment":
-            # create a dictionary with only the desired columns
-            cleaned_business = {column: business.get(column) for column in business_liscense_columns}
-            cleaned_business_liscense_data.append(cleaned_business)
-    
-    # Convert the list of dictionaries to a Pandas DataFrame
-    cleaned_business_license_df = pd.DataFrame(cleaned_business_liscense_data)
+    return
 
-    return cleaned_business_license_df
 
 def clean_snap_retailer_data():
     """
@@ -50,7 +44,7 @@ def clean_snap_retailer_data():
 
     * Consolidate the data to be only a list or relevant dictionary elements
     * Only keep rows where 'City' = "Chicago" and 'State' = "IL"
-
+    * Lowercase column names
 
     Returns:
         A pandas dataframe of the businesses and all their cleaned data components from the portal
@@ -67,6 +61,7 @@ def clean_snap_retailer_data():
 
     # Convert the list of dictionaries to a Pandas DataFrame
     cleaned_snap_retailer_df = pd.DataFrame(cleaned_snap_retailer_data)
+    cleaned_snap_retailer_df = cleaned_snap_retailer_df.rename(columns=lambda x: x.lower())
 
     return cleaned_snap_retailer_df
 
