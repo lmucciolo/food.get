@@ -87,7 +87,6 @@ def import_grocery_store_data():
     Returns:
         A pandas dataframe of Chicago grocery detail's features.
     """
-    grocery_store_df = pd.read_csv('/Users/stacygeorge/Downloads/Grocery_Store_Status_20240219.csv')
+    grocery_store_df = pd.read_csv('/food.get/food_get/data/raw_data/Grocery_Store_Status_20240219.csv')
 
     return grocery_store_df
-
