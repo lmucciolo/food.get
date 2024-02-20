@@ -35,7 +35,7 @@ def clean_grocery_stores():
     open_stores = open_stores.drop('Location', axis=1)
     open_stores = open_stores.rename(columns=lambda x: x.lower().replace(' ', '_'))
 
-    return
+    return open_stores
 
 
 def clean_snap_retailer_data():
