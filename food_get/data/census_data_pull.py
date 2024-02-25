@@ -56,11 +56,26 @@ def format_extract():
         df_response = json_to_df(api_response)
         if final_dataframe.empty:
             final_dataframe = df_response
-        #else:
-            final_dataframe = final_dataframe.merge(df_response[['tract', variable]], on='tract', how='left')
-
-
+    
     final_dataframe.rename(columns=col_name_mapping, inplace=True)
     final_dataframe.to_csv('census_2022.csv')
 
     return final_dataframe
+
+
+def state_income():
+    link = "https://api.census.gov/data/2022/acs/acs5/profile?get=DP03_0062E,DP03_0063E&for=state:17"
+    response = requests.request("GET", link)
+    df_response = json_to_df(response)
+    column_renaming = {'DP03_0062E': 'median_household_income', 'DP03_0063E': 'mean_household_income'}
+    df_response.rename(columns=column_renaming, inplace=True)
+    df_response.to_csv('illinois_2022.csv')
+
+def county_income():
+    link = 'https://api.census.gov/data/2022/acs/acs5/profile?get=DP03_0062E,DP03_0063E&for=county:031&in=state:17'
+    response = requests.request("GET", link)
+    #print(response.text)
+    df_response = json_to_df(response)
+    column_renaming = {'DP03_0062E': 'median_household_income', 'DP03_0063E': 'mean_household_income'}
+    df_response.rename(columns=column_renaming, inplace=True)
+    df_response.to_csv('cook_county_2022.csv')
