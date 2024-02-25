@@ -41,12 +41,17 @@ def format_extract():
     # DP02_0001E = Total Households
     # DP03_0062E Median household income
     # DP03_0063E = Mean household income 
-    # DP03_0119E = Percentage of families and people whose income in the
+    # DP03_0119PE = Percentage of families and people whose income in the
         # past 12 months is below the poverty level
+
+    col_name_mapping = {'DP05_0001E': 'total_population', 'DP02_0001E': 'total_households', 
+     'DP03_0062E': 'median_household_income', 'DP03_0063E': 'mean_household_income',
+     'DP03_0119PE': 'poverty_rate'}
+
 
     for variable in ['DP05_0001E', 'DP02_0001E',
                       'DP03_0062E', 'DP03_0063E',
-                      'DP03_0119E']:
+                      'DP03_0119PE']:
         api_response = extract(variable=variable)
         df_response = json_to_df(api_response)
         if final_dataframe.empty:
@@ -54,6 +59,8 @@ def format_extract():
         else:
             final_dataframe = final_dataframe.merge(df_response[['tract', variable]], on='tract', how='left')
 
+
+    final_dataframe.rename(columns=col_name_mapping, inplace=True)
     final_dataframe.to_csv('census_2022.csv')
 
     return final_dataframe
