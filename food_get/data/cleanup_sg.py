@@ -10,11 +10,10 @@ Description:
     This file cleans all the raw data
 """
 import pandas as pd
-from food_get.data.data_extract_sg import import_grocery_store_data, import_snap_retailers_data
+from data.match_groceries import match_grocery_stores
 
-GROCERY_RAW = import_grocery_store_data()
-SNAP_RAW = import_snap_retailers_data()
-
+GROCERY_RAW = pd.read_csv('data/raw_data/Grocery_Store_Status_20240219.csv')
+SNAP_RAW = pd.read_csv('data/raw_data/snap_retailers_data.csv')
 MEMBERSHIP_STORES = ["Costco", "Sam's Club", "BJ's Wholesale Club"]
 
 def clean_grocery_stores():
@@ -30,13 +29,12 @@ def clean_grocery_stores():
     """
         
     no_membership = GROCERY_RAW[~GROCERY_RAW['Store Name'].isin(MEMBERSHIP_STORES)]
-    cleaned_stores = no_membership[no_membership['New status'] == 'OPEN']
-    cleaned_stores[['Longitude', 'Latitude']] = cleaned_stores['Location'].str.extract(r'POINT \(([-+]?\d*\.\d+) ([-+]?\d*\.\d+)\)')
-    cleaned_stores = cleaned_stores.loc[:,['Store Name','Latitude','Longitude','Address']]
+    cleaned_stores_df = no_membership[no_membership['New status'] == 'OPEN']
+    cleaned_stores_df[['Longitude', 'Latitude']] = cleaned_stores_df['Location'].str.extract(r'POINT \(([-+]?\d*\.\d+) ([-+]?\d*\.\d+)\)')
+    cleaned_stores_df = cleaned_stores_df.loc[:,['Store Name','Latitude','Longitude','Address']]
+    cleaned_stores_df = cleaned_stores_df.rename(columns=lambda x: x.lower().replace(' ', '_'))
 
-    cleaned_stores = cleaned_stores.rename(columns=lambda x: x.lower().replace(' ', '_'))
-
-    return cleaned_stores
+    return cleaned_stores_df
 
 
 def clean_snap_retailer_data():
@@ -49,24 +47,20 @@ def clean_snap_retailer_data():
 
     Returns:
         A pandas dataframe of the businesses and all their cleaned data components from the portal
-    """
-    # Initialize an empty list to store dictionaries
-    cleaned_snap_retailer_data = []
+    """    
 
-    for retailer_entry in SNAP_RAW:
-        # Access the 'attributes' key within each entry
-        attributes = retailer_entry.get('attributes', {})
-
-        # Append the attributes dictionary to the result list
-        cleaned_snap_retailer_data.append(attributes)
-
-    # Convert the list of dictionaries to a Pandas DataFrame
-    cleaned_snap_retailer_df = pd.DataFrame(cleaned_snap_retailer_data)
-    
-    cleaned_snap_retailer_df = cleaned_snap_retailer_df.loc[:,['Store_Name','Latitude','Longitude','Store_Street_Address']]
+    cleaned_snap_retailer_df = SNAP_RAW.loc[:,['Store_Name','Latitude','Longitude','Store_Street_Address']]
     cleaned_snap_retailer_df = cleaned_snap_retailer_df.rename(columns={'Store_Street_Address': 'address'})
     cleaned_snap_retailer_df = cleaned_snap_retailer_df.rename(columns=lambda x: x.lower())
 
-
     return cleaned_snap_retailer_df
+
+def merge_and_assign_ids():
+    stores1_df = clean_grocery_stores()
+    stores2_df = clean_snap_retailer_data()
+    matched_stores_df = match_grocery_stores(stores1_df, stores2_df, max_dist=1000)
+    matched_stores_df.insert(0, 'store_id', range(1, len(matched_stores_df) + 1))
+
+    return matched_stores_df
+
 
