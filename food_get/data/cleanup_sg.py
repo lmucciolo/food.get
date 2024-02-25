@@ -32,7 +32,7 @@ def clean_grocery_stores():
     no_membership = GROCERY_RAW[~GROCERY_RAW['Store Name'].isin(MEMBERSHIP_STORES)]
     cleaned_stores = no_membership[no_membership['New status'] == 'OPEN']
     cleaned_stores[['Longitude', 'Latitude']] = cleaned_stores['Location'].str.extract(r'POINT \(([-+]?\d*\.\d+) ([-+]?\d*\.\d+)\)')
-    cleaned_stores = cleaned_stores.loc[:,['Store Name','Latitude','Longitude']]
+    cleaned_stores = cleaned_stores.loc[:,['Store Name','Latitude','Longitude','Address']]
 
     cleaned_stores = cleaned_stores.rename(columns=lambda x: x.lower().replace(' ', '_'))
 
@@ -63,8 +63,10 @@ def clean_snap_retailer_data():
     # Convert the list of dictionaries to a Pandas DataFrame
     cleaned_snap_retailer_df = pd.DataFrame(cleaned_snap_retailer_data)
     
-    cleaned_snap_retailer_df = cleaned_snap_retailer_df.loc[:,['Store_Name','Latitude','Longitude']]
+    cleaned_snap_retailer_df = cleaned_snap_retailer_df.loc[:,['Store_Name','Latitude','Longitude','Store_Street_Address']]
+    cleaned_snap_retailer_df = cleaned_snap_retailer_df.rename(columns={'Store_Street_Address': 'address'})
     cleaned_snap_retailer_df = cleaned_snap_retailer_df.rename(columns=lambda x: x.lower())
+
 
     return cleaned_snap_retailer_df
 
