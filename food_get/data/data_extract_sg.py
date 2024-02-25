@@ -27,7 +27,6 @@ def make_api_request(url, params = None):
         dict: Parsed JSON response.
     """
     response = requests.get(url)
-    print(f"Status Code: {response.status_code}")
     response.raise_for_status()
     return json.loads(response.text)
 
