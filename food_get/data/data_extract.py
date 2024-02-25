@@ -19,7 +19,7 @@ relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 'Pop2010', 'OHU20
 
 #Atlas_2019 = pd.read_csv('/Users/daniellerosenthal/Downloads/2019Atlas.csv')
 #Atlas_2015 = pd.read_csv('/Users/daniellerosenthal/Downloads/2015Atlas.csv')
-#
+#Atlas_2010 = pd.read_csv('Users/daniellerosenthal/Downloads/2010Atlas.csv')
 Atlas_Sets = pd.DataFrame()
 
 def import_atlas_data(year):
@@ -81,12 +81,21 @@ tract_half_mile = ['lapophalf','lapophalfshare','lalowihalf','lalowihalfshare','
 tract_one_mile = ['lapop1','lapop1share','lalowi1','lalowi1share','lakids1','lakids1share','laseniors1','laseniors1share','lawhite1','lawhite1share','lablack1','lablack1share','laasian1','laasian1share','lanhopi1','lanhopi1share','laaian1','laaian1share','laomultir1','laomultir1share','lahisp1','lahisp1share','lahunv1','lahunv1share','lasnap1','lasnap1share']
 
 relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 
-                    'Pop2010', 'OHU2010', 'lapop1',
+                    'POP2010', 'OHU2010', 'lapop1',
                     'lapop1share', 'lalowi1', 'lalowi1share', 'lasnap1', 'lasnap1share', 
                     'lapop10',
                     'lapop10share', 'lalowi10', 'lalowi10share', 
                     'lapop20', 'lapop20share', 'lalowi20',
 'lalowi20share']
+
+rel_col_2010 = ['CensusTract', 'State', 'County', 'Urban', 
+                    'POP2010', 'OHU2010', 'lapop1',
+                    'lapop1share', 'lalowi1', 'lalowi1share', 
+                    'lapop10',
+                    'lapop10share', 'lalowi10', 'lalowi10share', 
+                    'lapop20', 'lapop20share', 'lalowi20',
+'lalowi20share']
+
 
 # get rid of long distance; 
 
@@ -95,13 +104,30 @@ relevant_columns = ['CensusTract', 'State', 'County', 'Urban',
 
 Atlas_Sets = pd.DataFrame()
 
-def import_atlas_data(year):
-    Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/{}Atlas.csv'.format(year))
-    Atlas_Filtered = Atlas_Raw[relevant_columns]
-    Atlas_Filtered['YearLabel'] = year
+def import_atlas_data():
+    years = ['2010', '2015', '2019']
+    atlas_sets = pd.DataFrame()
+    
+    for year in years:
+        Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
+       
+        if year == '2010':
+            Atlas_Filtered = Atlas_Raw[rel_col_2010]
+        else:
+            Atlas_Filtered = Atlas_Raw[relevant_columns]
+        
+        Atlas_Filtered = Atlas_Raw.add_suffix('_{}'.format(year))
+        Atlas_Filtered.rename(columns={'CensusTract_{}'.format(year): 'CensusTract'}, inplace=True)
+        
+        if len(atlas_sets) == 0:
+            atlas_sets = Atlas_Filtered
+        else:
+            atlas_sets.merge(Atlas_Filtered, on='CensusTract', how='left')
+    
+    atlas_sets.to_csv('atlas_historical.csv')
 
-    Atlas_Sets = pd.concat([Atlas_Sets, Atlas_Filtered])
-
+    return atlas_sets
+    
 
 def make_request():
     time.sleep(0.1)

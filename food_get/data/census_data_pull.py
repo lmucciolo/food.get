@@ -56,7 +56,7 @@ def format_extract():
         df_response = json_to_df(api_response)
         if final_dataframe.empty:
             final_dataframe = df_response
-        else:
+        #else:
             final_dataframe = final_dataframe.merge(df_response[['tract', variable]], on='tract', how='left')
 
 
