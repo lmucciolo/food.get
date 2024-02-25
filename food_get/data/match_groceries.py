@@ -103,9 +103,6 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
     nonmatches_2.drop(["address", "address_num"], axis=1, inplace=True)
 
     final_df = pd.concat([merged_df, nonmatches_1, nonmatches_2])
-    print(merged_df.columns)
-    print(nonmatches_1.columns)
-    print(nonmatches_2.columns)
 
     return final_df
 
