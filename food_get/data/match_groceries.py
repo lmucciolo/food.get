@@ -39,11 +39,11 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     return d
 
 
-def match_grocery_stores(stores1_df, stores2_df, max_dist):
+def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
     """
     Matches grocery stores from two data sets with address and lat/long given a
     max_dist. Matches on dist and the numbers of an address. Only uses the first match
-    even if there are multiple.
+    even if there are multiple. Default value for max_distance = 1000 feet.
     """
 
     stores1_df["match_id"] = None
@@ -69,7 +69,6 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist):
                     stores1_df.loc[index1, "match_id"] = match_id
                     stores2_df.loc[index2, "match_id"] = match_id
                     match_id += 1
-                    print(match_id)
 
     matches_1 = stores1_df[~stores1_df["match_id"].isna()]
     matches_2 = stores2_df[~stores2_df["match_id"].isna()]

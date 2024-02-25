@@ -77,7 +77,21 @@ def import_snap_retailers_data():
         # time delay between batches
         time.sleep(0.1)
 
-    return snap_retailer_data_lst
+        # Initialize an empty list to store dictionaries
+        stored_snap_retailer_data = []
+
+        for retailer_entry in snap_retailer_data_lst:
+            # Access the 'attributes' key within each entry
+            attributes = retailer_entry.get('attributes', {})
+
+            # Append the attributes dictionary to the result list
+            stored_snap_retailer_data.append(attributes)
+
+        # Convert the list of dictionaries to a Pandas DataFrame
+        stored_snap_retailer_df = pd.DataFrame(stored_snap_retailer_data)
+
+        stored_snap_retailer_df.to_csv('data/raw_data/snap_retailers_data.csv', index=False)
+
 
 def import_grocery_store_data():
     """
@@ -86,6 +100,6 @@ def import_grocery_store_data():
     Returns:
         A pandas dataframe of Chicago grocery detail's features.
     """
-    grocery_store_df = pd.read_csv('/food.get/food_get/data/raw_data/Grocery_Store_Status_20240219.csv')
+    grocery_store_df = pd.read_csv('data/raw_data/Grocery_Store_Status_20240219.csv')
 
     return grocery_store_df
