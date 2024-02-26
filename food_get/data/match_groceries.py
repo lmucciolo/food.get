@@ -1,5 +1,6 @@
 import pandas as pd
 from math import asin, sqrt, cos, sin, radians
+import numpy as np
 
 EARTH_R_MI = 3963
 
@@ -70,10 +71,13 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
                     stores2_df.loc[index2, "match_id"] = match_id
                     match_id += 1
 
-    matches_1 = stores1_df[~stores1_df["match_id"].isna()]
-    matches_2 = stores2_df[~stores2_df["match_id"].isna()]
     # change non matches so they dont get matched
-    merged_df = pd.merge(matches_1, matches_2, on="match_id")
+    mask = stores2_df["match_id"].isnull()
+    stores2_df["match_id"] = np.where(mask, "missing", stores2_df["match_id"])
+    stores2_df[stores2_df["match_id"].isnull()]["match_id"] = "missing"
+    merged_df = pd.merge(stores1_df, stores2_df, how="left", on="match_id")
+    mask = merged_df["match_id"].notna()
+    merged_df["is_snap"] = np.where(mask, True, False)
 
     merge_drop_cols = [
         "store_name_y",
@@ -83,6 +87,7 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
         "latitude_y",
         "longitude_y",
         "address_y",
+        "match_id",
     ]
 
     merged_df = merged_df.drop(merge_drop_cols, axis=1)
@@ -96,15 +101,7 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
         inplace=True,
     )
 
-    nonmatches_1 = stores1_df[stores1_df["match_id"].isna()]
-    nonmatches_2 = stores2_df[stores2_df["match_id"].isna()]
-
-    nonmatches_1.drop(["address", "address_num"], axis=1, inplace=True)
-    nonmatches_2.drop(["address", "address_num"], axis=1, inplace=True)
-
-    final_df = pd.concat([merged_df, nonmatches_1, nonmatches_2])
-
-    return final_df
+    return merged_df
 
 
 # QA
