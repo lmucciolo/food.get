@@ -20,6 +20,7 @@ numpy = "^1.26.4"
 plotly = "^5.18.0"
 folium = "^0.15.1"
 ipykernel = "^6.29.2"
+ruff = "^0.2.2"
 
 [build-system]
 requires = ["poetry-core"]
