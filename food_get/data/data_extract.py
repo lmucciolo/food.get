@@ -86,7 +86,7 @@ relevant_columns = ['CensusTract', 'State', 'County', 'Urban',
                     'lapop10',
                     'lapop10share', 'lalowi10', 'lalowi10share', 
                     'lapop20', 'lapop20share', 'lalowi20',
-'lalowi20share']
+'lalowi20share', 'LATracts_half', 'LowIncomeTracts']
 
 rel_col_2010 = ['CensusTract', 'State', 'County', 'Urban', 
                     'POP2010', 'OHU2010', 'lapop1',
@@ -104,13 +104,16 @@ rel_col_2010 = ['CensusTract', 'State', 'County', 'Urban',
 
 Atlas_Sets = pd.DataFrame()
 
-def import_atlas_data():
+def import_atlas_data(export=False):
     years = ['2010', '2015', '2019']
     atlas_sets = pd.DataFrame()
     
     for year in years:
+        print("Looking at year {}".format(year))
         Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
-       
+        Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
+        #print(Atlas_Raw.columns)
+
         if year == '2010':
             Atlas_Filtered = Atlas_Raw[rel_col_2010]
         else:
@@ -118,16 +121,37 @@ def import_atlas_data():
         
         Atlas_Filtered = Atlas_Raw.add_suffix('_{}'.format(year))
         Atlas_Filtered.rename(columns={'CensusTract_{}'.format(year): 'CensusTract'}, inplace=True)
-        
+        #print(Atlas_Filtered.columns)
+
+
         if len(atlas_sets) == 0:
             atlas_sets = Atlas_Filtered
         else:
-            atlas_sets.merge(Atlas_Filtered, on='CensusTract', how='left')
+            atlas_sets = atlas_sets.merge(Atlas_Filtered, on='CensusTract', how='outer')
     
-    atlas_sets.to_csv('atlas_historical.csv')
+    if export:
+        atlas_sets.to_csv('atlas_historical.csv')
 
+    #print(atlas_sets.columns)
     return atlas_sets
-    
+
+def filtered_atlas(export=False):
+    orig_df = import_atlas_data()
+    #print(orig_df.columns)
+    cols = ['CensusTract']
+
+    # flag for low income tract
+    cols_p1 = [col for col in orig_df if col.startswith('LowIncomeTracts_')]
+    cols.extend(cols_p1)
+
+    # 'lalowihalfshare' low access, low-income population at 1/2 mile, share = Share of tract population that are low income individuals beyond 1/2 mile from supermarket
+    cols_p2 = [col for col in orig_df if col.startswith('LATracts_half_')]
+    cols.extend(cols_p2)
+    #print(cols)
+    if export:
+        orig_df[cols].to_csv('filtered_atlas.csv')
+
+   # return orig_df[cols]
 
 def make_request():
     time.sleep(0.1)
