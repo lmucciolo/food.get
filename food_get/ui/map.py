@@ -43,7 +43,6 @@ def create_tracks_inclusion(name=None):
     lake = gpd.read_file(
         pathlib.Path(__file__).parent
         / "../data/raw_data/Lake_Michigan_Shoreline.geojson"
-        # "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/raw_data/Lake_Michigan_Shoreline.geojson"
     )
 
     tracts_keep = geojson_data[geojson_data["relation"] == "one"]

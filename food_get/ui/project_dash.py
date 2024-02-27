@@ -3,7 +3,7 @@ from dash import html, dash_table
 from dash import dcc
 from dash.dependencies import Input, Output
 import folium
-from map import create_tracks_inclusion
+from food_get.ui.map import create_tracks_inclusion
 
 # Citation for dash:
 #   * for commands: https://dash.plotly.com/
@@ -24,13 +24,13 @@ def colors():
     }
 
 
-create_tracks_inclusion("folium_map")
+create_tracks_inclusion("map1")
 # Folium map
-# map_center = [41.8781, -87.6298]
-# folium_map = folium.Map(location=map_center, zoom_start=12)
-# marker_location = [41.8781, -87.6298]
-# folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
-# folium_map.save('folium_map.html')
+map_center = [41.8781, -87.6298]
+folium_map = folium.Map(location=map_center, zoom_start=12)
+marker_location = [41.8781, -87.6298]
+folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
+folium_map.save('folium_map.html')
 
 # Table data
 table_data = [
@@ -42,15 +42,21 @@ table_data = [
     {
         "Data Source": "Census Data",
         "Collection Method": "API",
-        "Data Year": "Census Tracts",
+        "Data Year": "2022",
     },
-    {"Data Source": "csv/GeoJson download", "Collection Method": "2010"},
+    {   "Data Source": "Census Tracts", 
+        "Collection Method": "csv/GeoJson download", 
+        "Data Year": "2010"
+    },
     {
         "Data Source": "Chicago Grocery Store Data",
         "Collection Method": "csv download",
         "Data Year": "2018",
     },
-    {"Data Source": "USDA SNAP", "Collection Method": "API", "Data Year": "2023"},
+    {   "Data Source": "USDA SNAP", 
+        "Collection Method": "API", 
+        "Data Year": "2023"
+    },
 ]
 
 
@@ -182,7 +188,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("folium_map.html", "r").read(),
+                                        srcDoc=open("map1.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
