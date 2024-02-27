@@ -11,6 +11,7 @@ Description:
     This file imports all the raw data from their source
 """
 import pandas as pd
+import numpy as np
 
 relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 'Pop2010', 'OHU2010', 'lapop1',
 'lapop1share', 'lalowi1', 'lalowi1share', 'lasnap1', 'lasnap1share', 'lapop10',
@@ -111,12 +112,13 @@ def import_atlas_data(export=False):
     for year in years:
         print("Looking at year {}".format(year))
         Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
-        Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
         #print(Atlas_Raw.columns)
 
         if year == '2010':
+            Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
             Atlas_Filtered = Atlas_Raw[rel_col_2010]
         else:
+            Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="Illinois"]
             Atlas_Filtered = Atlas_Raw[relevant_columns]
         
         Atlas_Filtered = Atlas_Raw.add_suffix('_{}'.format(year))
@@ -135,6 +137,14 @@ def import_atlas_data(export=False):
     #print(atlas_sets.columns)
     return atlas_sets
 
+def one_year(year=None):
+    Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
+    Atlas_Raw = Atlas_Raw[Atlas_Raw['State'] == "Illinois"]
+    return Atlas_Raw
+
+
+
+
 def filtered_atlas(export=False):
     orig_df = import_atlas_data()
     #print(orig_df.columns)
@@ -148,10 +158,14 @@ def filtered_atlas(export=False):
     cols_p2 = [col for col in orig_df if col.startswith('LATracts_half_')]
     cols.extend(cols_p2)
     #print(cols)
-    if export:
-        orig_df[cols].to_csv('filtered_atlas.csv')
+    filtered_df = orig_df[cols]
+    filtered_df['LowIncomeTracts_2019'] = filtered_df['LowIncomeTracts_2019'].values.astype(np.int64)
+    filtered_df['LATracts_half_2019'] = filtered_df['LATracts_half_2019'].values.astype(np.int64)
 
-   # return orig_df[cols]
+    if export:
+        filtered_df.to_csv('filtered_atlas_update.csv')
+
+    return filtered_df
 
 def make_request():
     time.sleep(0.1)
