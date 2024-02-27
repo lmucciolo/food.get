@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 from food_get.data.data_extract_census import tracts_2010_key
+import pathlib
 
 
 def create_base_map():
@@ -40,7 +41,9 @@ def create_tracks_inclusion(name=None):
     # prep data
     geojson_data = gpd.GeoDataFrame(tracts_2010_key())
     lake = gpd.read_file(
-        "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/raw_data/Lake_Michigan_Shoreline.geojson"
+        pathlib.Path(__file__).parent
+        / "../data/raw_data/Lake_Michigan_Shoreline.geojson"
+        # "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/raw_data/Lake_Michigan_Shoreline.geojson"
     )
 
     tracts_keep = geojson_data[geojson_data["relation"] == "one"]
