@@ -11,6 +11,7 @@ Description:
     This file imports all the raw data from their source
 """
 import pandas as pd
+import numpy as np
 
 relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 'Pop2010', 'OHU2010', 'lapop1',
 'lapop1share', 'lalowi1', 'lalowi1share', 'lasnap1', 'lasnap1share', 'lapop10',
@@ -86,7 +87,7 @@ relevant_columns = ['CensusTract', 'State', 'County', 'Urban',
                     'lapop10',
                     'lapop10share', 'lalowi10', 'lalowi10share', 
                     'lapop20', 'lapop20share', 'lalowi20',
-'lalowi20share']
+'lalowi20share', 'LATracts_half', 'LowIncomeTracts']
 
 rel_col_2010 = ['CensusTract', 'State', 'County', 'Urban', 
                     'POP2010', 'OHU2010', 'lapop1',
@@ -104,30 +105,67 @@ rel_col_2010 = ['CensusTract', 'State', 'County', 'Urban',
 
 Atlas_Sets = pd.DataFrame()
 
-def import_atlas_data():
+def import_atlas_data(export=False):
     years = ['2010', '2015', '2019']
     atlas_sets = pd.DataFrame()
     
     for year in years:
+        print("Looking at year {}".format(year))
         Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
-       
+        #print(Atlas_Raw.columns)
+
         if year == '2010':
+            Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
             Atlas_Filtered = Atlas_Raw[rel_col_2010]
         else:
+            Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="Illinois"]
             Atlas_Filtered = Atlas_Raw[relevant_columns]
         
         Atlas_Filtered = Atlas_Raw.add_suffix('_{}'.format(year))
         Atlas_Filtered.rename(columns={'CensusTract_{}'.format(year): 'CensusTract'}, inplace=True)
-        
+        #print(Atlas_Filtered.columns)
+
+
         if len(atlas_sets) == 0:
             atlas_sets = Atlas_Filtered
         else:
-            atlas_sets.merge(Atlas_Filtered, on='CensusTract', how='left')
+            atlas_sets = atlas_sets.merge(Atlas_Filtered, on='CensusTract', how='outer')
     
-    atlas_sets.to_csv('atlas_historical.csv')
+    if export:
+        atlas_sets.to_csv('atlas_historical.csv')
 
+    #print(atlas_sets.columns)
     return atlas_sets
-    
+
+def one_year(year=None):
+    Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
+    Atlas_Raw = Atlas_Raw[Atlas_Raw['State'] == "Illinois"]
+    return Atlas_Raw
+
+
+
+
+def filtered_atlas(export=False):
+    orig_df = import_atlas_data()
+    #print(orig_df.columns)
+    cols = ['CensusTract']
+
+    # flag for low income tract
+    cols_p1 = [col for col in orig_df if col.startswith('LowIncomeTracts_')]
+    cols.extend(cols_p1)
+
+    # 'lalowihalfshare' low access, low-income population at 1/2 mile, share = Share of tract population that are low income individuals beyond 1/2 mile from supermarket
+    cols_p2 = [col for col in orig_df if col.startswith('LATracts_half_')]
+    cols.extend(cols_p2)
+    #print(cols)
+    filtered_df = orig_df[cols]
+    filtered_df['LowIncomeTracts_2019'] = filtered_df['LowIncomeTracts_2019'].values.astype(np.int64)
+    filtered_df['LATracts_half_2019'] = filtered_df['LATracts_half_2019'].values.astype(np.int64)
+
+    if export:
+        filtered_df.to_csv('filtered_atlas_update.csv')
+
+    return filtered_df
 
 def make_request():
     time.sleep(0.1)
