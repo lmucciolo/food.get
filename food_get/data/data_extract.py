@@ -157,10 +157,19 @@ def filtered_atlas(export=False):
     # 'lalowihalfshare' low access, low-income population at 1/2 mile, share = Share of tract population that are low income individuals beyond 1/2 mile from supermarket
     cols_p2 = [col for col in orig_df if col.startswith('LATracts_half_')]
     cols.extend(cols_p2)
+
+    cols_p3 = [col for col in orig_df if col.startswith('lapophalfshare_')]
+    cols.extend(cols_p3)
+
+    cols_p4 = [col for col in orig_df if col.startswith('lapophalf_')]
+    cols.extend(cols_p4)
+
     #print(cols)
     filtered_df = orig_df[cols]
     filtered_df['LowIncomeTracts_2019'] = filtered_df['LowIncomeTracts_2019'].values.astype(np.int64)
     filtered_df['LATracts_half_2019'] = filtered_df['LATracts_half_2019'].values.astype(np.int64)
+    filtered_df['lapophalfshare_2019'] = filtered_df['lapophalfshare_2019'] / 100
+
 
     if export:
         filtered_df.to_csv('filtered_atlas_update.csv')
