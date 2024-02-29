@@ -5,6 +5,7 @@ import pathlib
 from food_get.data.data_extract_census import full_chi_10_20_tracts_one_mapping
 from food_get.analysis.generate_metric import create_buffers, find_intersections
 from food_get.data.data_extract_census import tracts_2010_key
+from food_get.data.cleanup_sg import clean_grocery_stores
 
 
 def tracts_metrics_df():
@@ -82,3 +83,23 @@ def track_comparison_df():
     tracts_keep_shore = tracts_keep.overlay(lake, how="difference")
 
     return tracts_keep, tracts_drop, tracts_keep_shore, lake
+
+
+def grocery_stores_df():
+    """
+    Create the data frames used for grocery store mapping
+    """
+    clean_groc = clean_grocery_stores()
+    clean_groc_gdf = gpd.GeoDataFrame(
+        clean_groc,
+        geometry=gpd.points_from_xy(clean_groc.longitude, clean_groc.latitude),
+        crs="EPSG:4326",
+    )
+    clean_groc_gdf = clean_groc_gdf[clean_groc_gdf["longitude"].notna()]
+
+    return clean_groc_gdf
+
+
+# historic (1- score)
+# create proportions (times by 100)
+# fix zeros on 2019
