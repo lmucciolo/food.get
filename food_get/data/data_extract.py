@@ -110,7 +110,7 @@ def import_atlas_data(export=False):
     atlas_sets = pd.DataFrame()
     
     for year in years:
-        print("Looking at year {}".format(year))
+        #print("Looking at year {}".format(year))
         Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
         #print(Atlas_Raw.columns)
 
@@ -143,6 +143,8 @@ def one_year(year=None):
     return Atlas_Raw
 
 
+def convert_to_perct_string(value):
+    return f"{value * 100:.1f}%"
 
 
 def filtered_atlas(export=False):
@@ -170,6 +172,13 @@ def filtered_atlas(export=False):
     filtered_df['LATracts_half_2019'] = filtered_df['LATracts_half_2019'].values.astype(np.int64)
     filtered_df['lapophalfshare_2019'] = filtered_df['lapophalfshare_2019'] / 100
 
+    filtered_df['lapophalfshare_2010'] = 1 - filtered_df['lapophalfshare_2010']
+    filtered_df['lapophalfshare_2015'] = 1 - filtered_df['lapophalfshare_2015']
+    filtered_df['lapophalfshare_2019'] = 1 - filtered_df['lapophalfshare_2019']
+
+    filtered_df['2010_prop_label'] = filtered_df['lapophalfshare_2010'].apply(lambda x: convert_to_perct_string(x))
+    filtered_df['2015_prop_label'] = filtered_df['lapophalfshare_2015'].apply(lambda x: convert_to_perct_string(x))
+    filtered_df['2019_prop_label'] = filtered_df['lapophalfshare_2019'].apply(lambda x: convert_to_perct_string(x))
 
     if export:
         filtered_df.to_csv('filtered_atlas_update.csv')
