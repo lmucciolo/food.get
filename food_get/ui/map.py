@@ -1,10 +1,13 @@
 import folium
+from folium import plugins
 import geopandas as gpd
 import pandas as pd
 import numpy as np
 import geopandas as gpd
-from food_get.data.data_extract_census import tracts_2010_key
-import pathlib
+from food_get.analysis.agg_metrics import track_comparison_df
+
+# add grocery stores
+# add circles for low income LI tracts
 
 
 def create_base_map():
@@ -38,24 +41,15 @@ def create_tracks_inclusion(name=None):
     creates with tracks we are using and dropping as well as shoreline
     adjustments
     """
-    # prep data
-    geojson_data = gpd.GeoDataFrame(tracts_2010_key())
-    lake = gpd.read_file(
-        pathlib.Path(__file__).parent
-        / "../data/raw_data/Lake_Michigan_Shoreline.geojson"
-    )
-
-    tracts_keep = geojson_data[geojson_data["relation"] == "one"]
-    tracts_drop = geojson_data[geojson_data["relation"] == "many"]
-
-    tracts_keep_shore = tracts_keep.overlay(lake, how="difference")
+    # create_data
+    tracts_keep, tracts_drop, tracts_keep_shore, lake = track_comparison_df()
 
     m = create_base_map()
 
-    styleKeep = {"color": "blue"}
-    styleDrop = {"color": "red"}
-    styleLake = {"color": "green"}
-    styleKeepShore = {"color": "purple"}
+    styleKeep = {"color": "#005AB5"}
+    styleDrop = {"color": "#DC3220"}
+    styleLake = {"color": "#9ccaff"}
+    styleKeepShore = {"color": "#005AB5"}
 
     tooltip1 = folium.GeoJsonTooltip(
         fields=["geoid10"],
@@ -108,6 +102,7 @@ def create_tracks_inclusion(name=None):
         show=True,
         tooltip=tooltip3,
     ).add_to(m)
+
     folium.GeoJson(
         tracts_keep,
         name="Keeping Full",
@@ -134,7 +129,7 @@ def create_tracks_inclusion(name=None):
         show=False,
     ).add_to(m)
 
-    folium.LayerControl().add_to(m)
+    folium.LayerControl(collapsed=False).add_to(m)
 
     if name:
         output = name + ".html"
@@ -143,8 +138,331 @@ def create_tracks_inclusion(name=None):
         return m
 
 
-def create_historic_map(name=None):
+def create_historic_map(df, name=None):
     m = create_base_map()
+
+    colors_2010 = ["#e34a33", "#fdbb84", "#fee8c8"]  # dark  # med  # light
+    colors_2015 = ["#8856a7", "#9ebcda", "#e0ecf4"]  # dark  # med  # light
+    colors_2019 = ["#2ca25f", "#99d8c9", "#e5f5f9"]  # dark  # med  # light
+
+    def style_function_2010_lowi(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2010"] is not None:
+            if feature["properties"]["lapophalfshare_2010"] <= 1 / 3:
+                default_style["fillColor"] = colors_2010[0]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2015"] == 1:
+                    default_style["fillPattern"] = stripes_lowa
+
+            elif feature["properties"]["lapophalfshare_2010"] <= 2 / 3:
+                default_style["fillColor"] = colors_2010[1]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2015"] == 1:
+                    default_style["fillPattern"] = stripes_meda
+            else:
+                default_style["fillColor"] = colors_2010[2]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2015"] == 1:
+                    default_style["fillPattern"] = stripes_higha
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_2010(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2010"] is not None:
+            if feature["properties"]["lapophalfshare_2010"] <= 1 / 3:
+                default_style["fillColor"] = colors_2010[0]
+                default_style["fillOpacity"] = 0.7
+
+            elif feature["properties"]["lapophalfshare_2010"] <= 2 / 3:
+                default_style["fillColor"] = colors_2010[1]
+                default_style["fillOpacity"] = 0.7
+            else:
+                default_style["fillColor"] = colors_2010[2]
+                default_style["fillOpacity"] = 0.7
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_2015_lowi(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2015"] is not None:
+            if feature["properties"]["lapophalfshare_2015"] <= 1 / 3:
+                default_style["fillColor"] = colors_2010[0]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2015"] == 1:
+                    default_style["fillPattern"] = stripes_lowa
+
+            elif feature["properties"]["lapophalfshare_2015"] <= 2 / 3:
+                default_style["fillColor"] = colors_2010[1]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2015"] == 1:
+                    default_style["fillPattern"] = stripes_meda
+            else:
+                default_style["fillColor"] = colors_2010[2]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2015"] == 1:
+                    default_style["fillPattern"] = stripes_higha
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_2015(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2015"] is not None:
+            if feature["properties"]["lapophalfshare_2015"] <= 1 / 3:
+                default_style["fillColor"] = colors_2010[0]
+                default_style["fillOpacity"] = 0.7
+
+            elif feature["properties"]["lapophalfshare_2015"] <= 2 / 3:
+                default_style["fillColor"] = colors_2010[1]
+                default_style["fillOpacity"] = 0.7
+            else:
+                default_style["fillColor"] = colors_2010[2]
+                default_style["fillOpacity"] = 0.7
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_2019_lowi(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2019"] is not None:
+            if feature["properties"]["lapophalfshare_2019"] <= 1 / 3:
+                default_style["fillColor"] = colors_2010[0]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2019"] == 1:
+                    default_style["fillPattern"] = stripes_lowa
+            elif feature["properties"]["lapophalfshare_2019"] <= 2 / 3:
+                default_style["fillColor"] = colors_2010[1]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2019"] == 1:
+                    default_style["fillPattern"] = stripes_meda
+            else:
+                default_style["fillColor"] = colors_2010[2]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2019"] == 1:
+                    default_style["fillPattern"] = stripes_higha
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_2019(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2019"] is not None:
+            if feature["properties"]["lapophalfshare_2019"] <= 1 / 3:
+                default_style["fillColor"] = colors_2010[0]
+                default_style["fillOpacity"] = 0.7
+            elif feature["properties"]["lapophalfshare_2019"] <= 2 / 3:
+                default_style["fillColor"] = colors_2010[1]
+                default_style["fillOpacity"] = 0.7
+            else:
+                default_style["fillColor"] = colors_2010[2]
+                default_style["fillOpacity"] = 0.7
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    stripes_lowa = folium.plugins.pattern.StripePattern(
+        angle=-45, opacity=1, color=colors_2010[0]
+    ).add_to(m)
+    stripes_meda = folium.plugins.pattern.StripePattern(
+        angle=-45, opacity=1, color=colors_2010[1]
+    ).add_to(m)
+    stripes_higha = folium.plugins.pattern.StripePattern(
+        angle=-45, opacity=1, color=colors_2010[2]
+    ).add_to(m)
+
+    circles = folium.plugins.pattern.CirclePattern(
+        width=10,
+        height=10,
+        radius=3,
+        fill_opacity=1,
+        opacity=0.5,
+        fill_color="#808080",
+        color="#808080",
+    ).add_to(m)
+
+    tooltip_10 = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2010"],
+        aliases=["Tract Name:", "2010 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+    tooltip_10_lowi = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2010"],
+        aliases=["Tract Name:", "2010 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    tooltip_15 = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2015"],
+        aliases=["Tract Name:", "2015 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    tooltip_15_lowi = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2015"],
+        aliases=["Tract Name:", "2015 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    tooltip_19 = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2019"],
+        aliases=["Tract Name:", "2019 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    tooltip_19_lowi = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2019"],
+        aliases=["Tract Name:", "2019 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    folium.GeoJson(
+        df,
+        name="2010 Access Proportion",
+        style_function=style_function_2010,
+        tooltip=tooltip_10,
+        overlay=False,
+        show=True,
+    ).add_to(m)
+
+    folium.GeoJson(
+        df,
+        name="2010 Access Proportion and Low Income",
+        style_function=style_function_2010_lowi,
+        tooltip=tooltip_10_lowi,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    folium.GeoJson(
+        df,
+        name="2015 Access Proportion",
+        style_function=style_function_2015,
+        tooltip=tooltip_15,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    folium.GeoJson(
+        df,
+        name="2015 Access Proportion and Low Income",
+        style_function=style_function_2015_lowi,
+        tooltip=tooltip_15_lowi,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    folium.GeoJson(
+        df,
+        name="2019 Access Proportion",
+        style_function=style_function_2019,
+        tooltip=tooltip_19,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    folium.GeoJson(
+        df,
+        name="2019 Access Proportion and Low Income",
+        style_function=style_function_2019_lowi,
+        tooltip=tooltip_19_lowi,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    folium.LayerControl(collapsed=False).add_to(m)
 
     if name:
         output = name + ".html"
@@ -153,8 +471,239 @@ def create_historic_map(name=None):
         return m
 
 
-def create_2022_map(name=None):
+def create_2022_map(metrics_df, grocery_df, name=None):
     m = create_base_map()
+
+    # styles
+    colors_2022 = ["#e34a33", "#fdbb84", "#fee8c8"]  # dark  # med  # light
+
+    stripes_lowa = folium.plugins.pattern.StripePattern(
+        angle=-45, opacity=1, color=colors_2022[0]
+    ).add_to(m)
+    stripes_meda = folium.plugins.pattern.StripePattern(
+        angle=-45, opacity=1, color=colors_2022[1]
+    ).add_to(m)
+    stripes_higha = folium.plugins.pattern.StripePattern(
+        angle=-45, opacity=1, color=colors_2022[2]
+    ).add_to(m)
+
+    circles = folium.plugins.pattern.CirclePattern(
+        width=10,
+        height=10,
+        radius=3,
+        fill_opacity=1,
+        opacity=0.5,
+        fill_color="#808080",
+        color="#808080",
+    ).add_to(m)
+
+    def style_function_2022(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2022"] is not None:
+            if feature["properties"]["lapophalfshare_2022"] <= 1 / 3:
+                default_style["fillColor"] = colors_2022[0]
+                default_style["fillOpacity"] = 0.7
+            elif feature["properties"]["lapophalfshare_2022"] <= 2 / 3:
+                default_style["fillColor"] = colors_2022[1]
+                default_style["fillOpacity"] = 0.7
+            else:
+                default_style["fillColor"] = colors_2022[2]
+                default_style["fillOpacity"] = 0.7
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_2022_lowi(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2022"] is not None:
+            if feature["properties"]["lapophalfshare_2022"] <= 1 / 3:
+                default_style["fillColor"] = colors_2022[0]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2022"] == 1:
+                    default_style["fillPattern"] = stripes_lowa
+            elif feature["properties"]["lapophalfshare_2022"] <= 2 / 3:
+                default_style["fillColor"] = colors_2022[1]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2022"] == 1:
+                    default_style["fillPattern"] = stripes_meda
+            else:
+                default_style["fillColor"] = colors_2022[2]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2022"] == 1:
+                    default_style["fillPattern"] = stripes_higha
+        else:
+            default_style["fillPattern"] = circles
+
+        return default_style
+
+    def style_function_diff(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["10_22_diff"] == "Better":
+            default_style["fillColor"] = "#99d8c9"
+            default_style["fillOpacity"] = 0.7
+        elif feature["properties"]["10_22_diff"] == "Worse":
+            default_style["fillColor"] = "#ef6548"
+            default_style["fillOpacity"] = 0.7
+        else:
+            default_style["fillColor"] = "#bdbdbd"
+            default_style["fillOpacity"] = 0.7
+
+        return default_style
+
+    tooltip_22 = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2022"],
+        aliases=["Tract Name:", "2022 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+        background-color: #F0EFEF;
+        border: 2px solid black;
+        border-radius: 3px;
+        box-shadow: 3px;
+    """,
+        max_width=800,
+    )
+
+    folium.GeoJson(
+        metrics_df,
+        name="2022 Access Proportion",
+        style_function=style_function_2022,
+        tooltip=tooltip_22,
+        overlay=False,
+        show=True,
+    ).add_to(m)
+
+    tooltip_diff = folium.GeoJsonTooltip(
+        fields=[
+            "GEOID_TRACT_20",
+            "lapophalfshare_2010",
+            "lapophalfshare_2022",
+            "10_22_diff",
+        ],
+        aliases=[
+            "Tract Name:",
+            "2010 Low Access Proportion:",
+            "2022 Low Access Proportion:",
+            "Change in Food Access 2010-2022:",
+        ],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+            background-color: #F0EFEF;
+            border: 2px solid black;
+            border-radius: 3px;
+            box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    folium.GeoJson(
+        metrics_df,
+        name="Change in Food Access",
+        style_function=style_function_diff,
+        tooltip=tooltip_diff,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    tooltip_22_lowi = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2022"],
+        aliases=["Tract Name:", "2022 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+    background-color: #F0EFEF;
+    border: 2px solid black;
+    border-radius: 3px;
+    box-shadow: 3px;
+    """,
+        max_width=800,
+    )
+
+    folium.GeoJson(
+        metrics_df,
+        name="2022 Access Proportion",
+        style_function=style_function_2022_lowi,
+        tooltip=tooltip_22_lowi,
+        overlay=False,
+        show=False,
+    ).add_to(m)
+
+    tooltip_diff = folium.GeoJsonTooltip(
+        fields=[
+            "GEOID_TRACT_20",
+            "lapophalfshare_2010",
+            "lapophalfshare_2022",
+            "10_22_diff",
+        ],
+        aliases=[
+            "Tract Name:",
+            "2010 Low Access Proportion:",
+            "2022 Low Access Proportion:",
+            "Change in Food Access 2010-2022:",
+        ],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+        background-color: #F0EFEF;
+        border: 2px solid black;
+        border-radius: 3px;
+        box-shadow: 3px;
+    """,
+        max_width=800,
+    )
+
+    tooltip_groc = folium.GeoJsonTooltip(
+        fields=["store_name", "address"],
+        aliases=["Store Name:", "Address:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+        background-color: #F0EFEF;
+        border: 2px solid black;
+        border-radius: 3px;
+        box-shadow: 3px;
+        """,
+        max_width=800,
+    )
+
+    folium.GeoJson(
+        grocery_df,
+        name="Grocery Stores",
+        marker=folium.Circle(
+            radius=200,
+            fill_color="#005AB5",
+            fill_opacity=0.4,
+            color="#005AB5",
+            weight=2,
+        ),
+        tooltip=tooltip_groc,
+        overlay=True,
+        show=False,
+    ).add_to(m)
+
+    folium.LayerControl(collapsed=False).add_to(m)
 
     if name:
         output = name + ".html"
@@ -165,6 +714,8 @@ def create_2022_map(name=None):
 
 def create_total_map(name=None):
     m = create_base_map()
+
+    folium.LayerControl(collapsed=False).add_to(m)
 
     if name:
         output = name + ".html"
