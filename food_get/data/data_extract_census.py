@@ -22,7 +22,6 @@ def extract_chi_census_tracts_2010():
     filename = (
         pathlib.Path(__file__).parent / "../data/raw_data/census_tracts_2010.geojson"
     )
-    # filename = 'raw_data/census_tracts_2010.geojson'
     census = gpd.read_file(filename)
     columns = ["tractce10", "geoid10", "name10", "namelsad10", "geometry"]
     final_df = pd.DataFrame(census[columns])
@@ -36,10 +35,7 @@ def extract_chi_census_tracts_2020():
     Takes in census track data and returns shorted table to filter by
     census track for chicago
     """
-    # for now until we get 2020 data
-    # filename = "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/raw_data/chi_ct_2020.csv"
     filename = pathlib.Path(__file__).parent / "../data/raw_data/chi_ct_2020.csv"
-    # filename = "raw_data/chi_ct_2020.csv"
 
     census = pd.read_csv(filename, dtype=str)
     final_df = census[["ct_chicago", "community_name"]].rename(
@@ -133,7 +129,6 @@ def restrict_tract_to_shore():
     lake = gpd.read_file(
         pathlib.Path(__file__).parent
         / "../data/raw_data/Lake_Michigan_Shoreline.geojson"
-        # "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/raw_data/Lake_Michigan_Shoreline.geojson"
     )
 
     final_geo = census_tracks_geo.overlay(lake, how="difference")
