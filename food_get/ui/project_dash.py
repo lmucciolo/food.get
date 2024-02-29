@@ -2,12 +2,22 @@ import dash
 from dash import html, dash_table
 from dash import dcc
 from dash.dependencies import Input, Output
-import folium
-from food_get.ui.map import create_tracks_inclusion
+from food_get.ui.map import (
+    create_tracks_inclusion,
+    create_2022_map,
+    create_historic_map,
+)
+from food_get.analysis.agg_metrics import tracts_metrics_df
 
 # Citation for dash:
 #   * for commands: https://dash.plotly.com/
 #   * for design inspiration: https://dash.gallery/dash-forna-container/
+
+# data prep
+df = tracts_metrics_df()
+
+create_2022_map(df, "map_2022")
+
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -25,12 +35,6 @@ def colors():
 
 
 create_tracks_inclusion("map1")
-# Folium map
-map_center = [41.8781, -87.6298]
-folium_map = folium.Map(location=map_center, zoom_start=12)
-marker_location = [41.8781, -87.6298]
-folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
-folium_map.save('folium_map.html')
 
 # Table data
 table_data = [
@@ -44,19 +48,17 @@ table_data = [
         "Collection Method": "API",
         "Data Year": "2022",
     },
-    {   "Data Source": "Census Tracts", 
-        "Collection Method": "csv/GeoJson download", 
-        "Data Year": "2010"
+    {
+        "Data Source": "Census Tracts",
+        "Collection Method": "csv/GeoJson download",
+        "Data Year": "2010",
     },
     {
         "Data Source": "Chicago Grocery Store Data",
         "Collection Method": "csv download",
         "Data Year": "2018",
     },
-    {   "Data Source": "USDA SNAP", 
-        "Collection Method": "API", 
-        "Data Year": "2023"
-    },
+    {"Data Source": "USDA SNAP", "Collection Method": "API", "Data Year": "2023"},
 ]
 
 
@@ -293,7 +295,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("folium_map.html", "r").read(),
+                                        srcDoc=open("map_2022.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={

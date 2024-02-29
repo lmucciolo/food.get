@@ -116,6 +116,8 @@ def full_chi_10_20_tracts_one_mapping():
 
     final_df = final_df.drop(columns=["geoid10", "relation"])
 
+    final_df = final_df[final_df["geometry"].notna()]
+
     return final_df
 
 
