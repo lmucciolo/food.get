@@ -2,7 +2,25 @@ import dash
 from dash import html, dcc, dash_table
 from dash.dependencies import Input, Output
 import folium
-from food_get.ui.map import create_tracks_inclusion
+from food_get.ui.map import create_tracks_inclusion, create_2022_map, create_historic_map, create_total_map
+
+# data prep
+df = tracts_metrics_df()
+
+# Create tracks inclusion map
+create_tracks_inclusion("map1")
+create_historic_map(df, "map2")
+create_2022_map(df,"map3")
+create_total_map(df,"map4")
+
+# Folium map
+map_center = [41.8781, -87.6298]
+folium_map = folium.Map(location=map_center, zoom_start=12)
+marker_location = [41.8781, -87.6298]
+folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
+folium_map.save('folium_map.html')
+
+
 
 # Define colors
 def colors():
@@ -16,16 +34,6 @@ def colors():
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
-
-# Create tracks inclusion map
-create_tracks_inclusion("map1")
-
-# Folium map
-map_center = [41.8781, -87.6298]
-folium_map = folium.Map(location=map_center, zoom_start=12)
-marker_location = [41.8781, -87.6298]
-folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
-folium_map.save('folium_map.html')
 
 # Table data
 table_data = [
