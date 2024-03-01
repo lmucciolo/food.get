@@ -6,6 +6,7 @@ from food_get.data.data_extract_census import full_chi_10_20_tracts_one_mapping
 from food_get.analysis.generate_metric import create_buffers, find_intersections
 from food_get.data.data_extract_census import tracts_2010_key
 from food_get.data.cleanup_sg import clean_grocery_stores
+from food_get.data.data_extract import filtered_atlas
 
 
 def tracts_metrics_df():
@@ -20,6 +21,7 @@ def tracts_metrics_df():
     atlas_hist = pd.read_csv(
         "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/filtered_atlas_update.csv"
     )
+    # atlas_hist = filtered_atlas()
 
     # 2022 created metric
     stores = create_buffers()
@@ -100,6 +102,5 @@ def grocery_stores_df():
     return clean_groc_gdf
 
 
-# historic (1- score)
 # create proportions (times by 100)
 # fix zeros on 2019
