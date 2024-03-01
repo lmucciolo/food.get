@@ -1,7 +1,7 @@
 import dash
-from dash import html, dash_table
-from dash import dcc
+from dash import html, dcc, dash_table
 from dash.dependencies import Input, Output
+
 from food_get.ui.map import (
     create_tracks_inclusion,
     create_2022_map,
@@ -9,9 +9,21 @@ from food_get.ui.map import (
 )
 from food_get.analysis.agg_metrics import tracts_metrics_df
 
-# Citation for dash:
-#   * for commands: https://dash.plotly.com/
-#   * for design inspiration: https://dash.gallery/dash-forna-container/
+# data prep
+df = tracts_metrics_df()
+
+# Create tracks inclusion map
+create_tracks_inclusion("map1")
+create_historic_map(df, "map2")
+create_2022_map(df,"map3")
+create_total_map(df,"map4")
+
+# Folium map
+map_center = [41.8781, -87.6298]
+folium_map = folium.Map(location=map_center, zoom_start=12)
+marker_location = [41.8781, -87.6298]
+folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
+folium_map.save('folium_map.html')
 
 # data prep
 df = tracts_metrics_df()
@@ -23,7 +35,7 @@ create_2022_map(df, "map_2022")
 app = dash.Dash(__name__)
 
 
-# Define header colors
+# Define colors
 def colors():
     return {
         "h1_color": "#046b99",
@@ -33,8 +45,8 @@ def colors():
         "g2_color": "#e6e6e6",
     }
 
-
-create_tracks_inclusion("map1")
+# Initialize the Dash app
+app = dash.Dash(__name__)
 
 # Table data
 table_data = [
@@ -60,7 +72,6 @@ table_data = [
     },
     {"Data Source": "USDA SNAP", "Collection Method": "API", "Data Year": "2023"},
 ]
-
 
 # Function to generate layout
 def generate_layout(table_width):
@@ -131,6 +142,12 @@ def generate_layout(table_width):
                                 style={"color": colors()["g1_color"]},
                             ),
                             " | ",
+                            dcc.Link(
+                                "Footnotes",
+                                href="/container5",
+                                style={"color": colors()["g1_color"]},
+                            ),
+                            " | ",
                             html.A(
                                 "GitHub",
                                 href=github_link,
@@ -162,22 +179,6 @@ def generate_layout(table_width):
                                     html.P(
                                         "The project aims to analyze food access and security within the Chicago area. The scope of this work shows how food access has changed in the city over time and provides an updated food access metric for 2022 to understand communities’ post-pandemic food access. The data underpinning the historical component of the project includes Atlas Food Access Research data from 2019, 2015, and 2010. To recreate a more recent metric, grocery store and snap locations of the City of Chicago data are paired with demographic information from the United States census. For understanding and consumption, the project findings are presented in a Dash web application containing several interactive maps.",
                                         style={"padding": "0.25in", "height": "100%"},
-                                    ),
-                                    dash_table.DataTable(
-                                        id="data-table",
-                                        columns=[
-                                            {"name": col, "id": col}
-                                            for col in table_data[0].keys()
-                                        ],
-                                        data=table_data,
-                                        style_table={
-                                            "height": "300px",
-                                            "overflowY": "auto",
-                                            "padding-left": "0.25in",
-                                            "padding-right": "0.25in",
-                                            "width": "5.5in",
-                                        },
-                                        style_cell={"textAlign": "center"},
                                     ),
                                 ],
                                 style={
@@ -367,6 +368,81 @@ def generate_layout(table_width):
                 id="container4",
                 hidden=True,
             ),
+            # Container 5
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            html.H3(
+                                "Project Design Choices",
+                                style={
+                                    "margin-bottom": "0.8em",
+                                    "margin-left": "0.25in",
+                                },
+                            ),
+                            html.Ul([
+                                html.Li([
+                                    html.Strong("Years"),
+                                    html.Ul([
+                                        html.Li("For the recreated post-pandemic metric, census data from 2022 was used."),
+                                        html.Li("For ease of data collection and alignment with the Chicago data portal, grocery store data is from 2018.")
+                                    ])
+                                ]),
+                                html.Li([
+                                    html.Strong("Chicago geography"),
+                                    html.Ul([
+                                        html.Li("For metric calculations, excluding the area of census tracks that are in the lake or river. Folium map provides viewers with the interactive ability to toggle between the original census tracts with the lake and without."),
+                                        html.Li("The project only determines the metric for census tracts that stayed the same from 2010 to 2020.")
+                                    ])
+                                ]),
+                                html.Li([
+                                    html.Strong("Grocery store matching"),
+                                    html.Ul([
+                                        html.Li("Constrained matching process of grocery stores to SNAP providers to within 1000 feet of each other and share address numbers.")
+                                    ])
+                                ]),
+                            ]),
+                            # Add the DataTable here
+                            dash_table.DataTable(
+                                id="data-table",
+                                columns=[
+                                    {"name": col, "id": col} for col in table_data[0].keys()
+                                ],
+                                data=table_data,
+                                style_table={
+                                    "height": "300px",
+                                    "overflowY": "auto",
+                                    "padding-left": "0.25in",
+                                    "padding-right": "0.25in",
+                                    "width": "5.5in",
+                                },
+                                style_cell={"textAlign": "center"},
+                            ),
+                        ],
+                        style={
+                            "width": "40%",
+                            "float": "left",
+                            "background-color": colors()["g2_color"],
+                            "margin-left": "0.25in",
+                        },
+                    ),
+                    html.Div(
+                        [
+                            html.Iframe(
+                                srcDoc=open("folium_map.html", "r").read(),
+                                width="100%",
+                                height="600px",
+                                style={"margin-left": "0.25in", "margin-right": "0.25in"},
+                            )
+                        ],
+                        style={"width": "50%", "float": "left"},
+                    ),
+                ],
+                className="main-container",
+                style=container_style,
+                id="container5",
+                hidden=True,
+            ),
         ]
     )
 
@@ -382,18 +458,19 @@ app.layout = generate_layout(initial_table_width)
 @app.callback(
     [
         Output(container_id, "hidden")
-        for container_id in ["container1", "container2", "container3", "container4"]
+        for container_id in ["container1", "container2", "container3", "container4", "container5"]
     ],
     [Input("url", "pathname")],
 )
 def update_container_visibility(pathname):
     if pathname is None or pathname == "/":
-        return False, True, True, True  # Default to container1
+        return False, True, True, True, True  # Default to container1
     return (
         pathname != "/container1",
         pathname != "/container2",
         pathname != "/container3",
         pathname != "/container4",
+        pathname != "/container5",
     )
 
 
