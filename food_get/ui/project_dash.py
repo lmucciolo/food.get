@@ -1,4 +1,5 @@
 import dash
+import folium
 from dash import html, dcc, dash_table
 from dash.dependencies import Input, Output
 
@@ -6,17 +7,18 @@ from food_get.ui.map import (
     create_tracks_inclusion,
     create_2022_map,
     create_historic_map,
+    create_total_map
 )
 from food_get.analysis.agg_metrics import tracts_metrics_df
 
-# data prep
-df = tracts_metrics_df()
+# # data prep
+# df = tracts_metrics_df()
 
-# Create tracks inclusion map
+# # Create tracks inclusion map
 create_tracks_inclusion("map1")
-create_historic_map(df, "map2")
-create_2022_map(df,"map3")
-create_total_map(df,"map4")
+# create_historic_map(df, "map2")
+# create_2022_map(df,"map3")
+# create_total_map(df,"map4")
 
 # Folium map
 map_center = [41.8781, -87.6298]
@@ -25,14 +27,6 @@ marker_location = [41.8781, -87.6298]
 folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
 folium_map.save('folium_map.html')
 
-# data prep
-df = tracts_metrics_df()
-
-create_2022_map(df, "map_2022")
-
-
-# Initialize the Dash app
-app = dash.Dash(__name__)
 
 
 # Define colors
@@ -63,14 +57,18 @@ table_data = [
     {
         "Data Source": "Census Tracts",
         "Collection Method": "csv/GeoJson download",
-        "Data Year": "2010",
+        "Data Year": "2010"
     },
     {
         "Data Source": "Chicago Grocery Store Data",
         "Collection Method": "csv download",
         "Data Year": "2018",
     },
-    {"Data Source": "USDA SNAP", "Collection Method": "API", "Data Year": "2023"},
+    {
+        "Data Source": "USDA SNAP",
+        "Collection Method": "API",
+        "Data Year": "2023"
+    },
 ]
 
 # Function to generate layout
@@ -296,7 +294,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("map_2022.html", "r").read(),
+                                        srcDoc=open("folium_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
