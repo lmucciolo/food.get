@@ -8,17 +8,17 @@ from food_get.ui.map import (
     create_2022_map,
     create_historic_map,
     create_total_map
-)
+    )
 from food_get.analysis.agg_metrics import tracts_metrics_df
 
 # # data prep
 # df = tracts_metrics_df()
 
-# # Create tracks inclusion map
-create_tracks_inclusion("map1")
-# create_historic_map(df, "map2")
-# create_2022_map(df,"map3")
-# create_total_map(df,"map4")
+# Create maps
+create_tracks_inclusion("tract_map")
+# create_historic_map(df, "historic_map")
+# create_2022_map(df,"2022_map")
+# create_total_map(df,"total_map")
 
 # Folium map
 map_center = [41.8781, -87.6298]
@@ -189,7 +189,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("map1.html", "r").read(),
+                                        srcDoc=open("tract_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
@@ -241,7 +241,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("folium_map.html", "r").read(),
+                                        srcDoc=open("tract_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
@@ -294,7 +294,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("folium_map.html", "r").read(),
+                                        srcDoc=open("tract_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
@@ -347,7 +347,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("folium_map.html", "r").read(),
+                                        srcDoc=open("tract_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
