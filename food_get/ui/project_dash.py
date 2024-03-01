@@ -1,8 +1,13 @@
 import dash
 from dash import html, dcc, dash_table
 from dash.dependencies import Input, Output
-import folium
-from food_get.ui.map import create_tracks_inclusion, create_2022_map, create_historic_map, create_total_map
+
+from food_get.ui.map import (
+    create_tracks_inclusion,
+    create_2022_map,
+    create_historic_map,
+)
+from food_get.analysis.agg_metrics import tracts_metrics_df
 
 # data prep
 df = tracts_metrics_df()
@@ -20,6 +25,14 @@ marker_location = [41.8781, -87.6298]
 folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
 folium_map.save('folium_map.html')
 
+# data prep
+df = tracts_metrics_df()
+
+create_2022_map(df, "map_2022")
+
+
+# Initialize the Dash app
+app = dash.Dash(__name__)
 
 
 # Define colors
@@ -50,18 +63,14 @@ table_data = [
     {
         "Data Source": "Census Tracts",
         "Collection Method": "csv/GeoJson download",
-        "Data Year": "2010"
+        "Data Year": "2010",
     },
     {
         "Data Source": "Chicago Grocery Store Data",
         "Collection Method": "csv download",
         "Data Year": "2018",
     },
-    {
-        "Data Source": "USDA SNAP",
-        "Collection Method": "API",
-        "Data Year": "2023"
-    },
+    {"Data Source": "USDA SNAP", "Collection Method": "API", "Data Year": "2023"},
 ]
 
 # Function to generate layout
@@ -287,7 +296,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("folium_map.html", "r").read(),
+                                        srcDoc=open("map_2022.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
