@@ -19,7 +19,7 @@ def tracts_metrics_df():
 
     # historic atlas data
     atlas_hist = pd.read_csv(
-        "/Users/austinsteinhart/Desktop/CAPP122/food.get/food_get/data/filtered_atlas_update.csv"
+        "/Users/stacygeorge/Documents/capp30122/food.get/food_get/data/filtered_atlas_update.csv"
     )
     # atlas_hist = filtered_atlas()
 
