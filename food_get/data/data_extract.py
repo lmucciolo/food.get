@@ -18,9 +18,9 @@ relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 'Pop2010', 'OHU20
 'lapop10share', 'lalowi10', 'lalowi10share', 'lapop20', 'lapop20share', 'lalowi20',
 'lalowi20share']
 
-#Atlas_2019 = pd.read_csv('/Users/daniellerosenthal/Downloads/2019Atlas.csv')
-#Atlas_2015 = pd.read_csv('/Users/daniellerosenthal/Downloads/2015Atlas.csv')
-#Atlas_2010 = pd.read_csv('Users/daniellerosenthal/Downloads/2010Atlas.csv')
+Atlas_2019 = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas2019.csv')
+Atlas_2015 = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas2015.csv')
+Atlas_2010 = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas2010.csv')
 Atlas_Sets = pd.DataFrame()
 
 def import_atlas_data(year):
@@ -67,64 +67,22 @@ def import_snap_retailers_data():
 import requests
 import time
 
-census_base_call = 'http://api.census.gov/data/2022/acs/acs5'
-CENSUS_API_KEY = '33d3a1aa6c54c6ef7e892aba406cc5fbb1c743fa'
-params = {'key': CENSUS_API_KEY}
-cbc = 'https://api.census.gov/data/2022/acs/acs5?get=NAME,B01001_001E&for=tract:*&in=state:17&key=33d3a1aa6c54c6ef7e892aba406cc5fbb1c743fa'
-
-# Columns related to features of the census tract itself at a high level
-tract_identifying_columns = ['CensusTract', 'State', 'County', 'Urban', 
-                    'Pop2010', 'OHU2010', 'GroupQuartersFlag', 'NUMGQTRS', 'PCTGQTRS',
- 'LowIncomeTracts', 'PovertyRate', 'MedianFamily Income', 'LATracts_half', 'LATracts1', 'LATracts10', 'LATracts20', 'TractSNAP', 'TractLOWI']
-
-tract_half_mile = ['lapophalf','lapophalfshare','lalowihalf','lalowihalfshare','lakidshalf','lakidshalfshare','laseniorshalf','laseniorshalfshare','lawhitehalf','lawhitehalfshare','lablackhalf','lablackhalfshare','laasianhalf','laasianhalfshare','lanhopihalf','lanhopihalfshare','laaianhalf','laaianhalfshare','laomultirhalf','laomultirhalfshare','lahisphalf','lahisphalfshare','lahunvhalf','lahunvhalfshare','lasnaphalf','lasnaphalfshare']
-
-tract_one_mile = ['lapop1','lapop1share','lalowi1','lalowi1share','lakids1','lakids1share','laseniors1','laseniors1share','lawhite1','lawhite1share','lablack1','lablack1share','laasian1','laasian1share','lanhopi1','lanhopi1share','laaian1','laaian1share','laomultir1','laomultir1share','lahisp1','lahisp1share','lahunv1','lahunv1share','lasnap1','lasnap1share']
-
-relevant_columns = ['CensusTract', 'State', 'County', 'Urban', 
-                    'POP2010', 'OHU2010', 'lapop1',
-                    'lapop1share', 'lalowi1', 'lalowi1share', 'lasnap1', 'lasnap1share', 
-                    'lapop10',
-                    'lapop10share', 'lalowi10', 'lalowi10share', 
-                    'lapop20', 'lapop20share', 'lalowi20',
-'lalowi20share', 'LATracts_half', 'LowIncomeTracts']
-
-rel_col_2010 = ['CensusTract', 'State', 'County', 'Urban', 
-                    'POP2010', 'OHU2010', 'lapop1',
-                    'lapop1share', 'lalowi1', 'lalowi1share', 
-                    'lapop10',
-                    'lapop10share', 'lalowi10', 'lalowi10share', 
-                    'lapop20', 'lapop20share', 'lalowi20',
-'lalowi20share']
-
-
-# get rid of long distance; 
-
-#Atlas_2019 = pd.read_csv('/Users/daniellerosenthal/Downloads/2019Atlas.csv')
-#Atlas_2015 = pd.read_csv('/Users/daniellerosenthal/Downloads/2015Atlas.csv')
-
 Atlas_Sets = pd.DataFrame()
 
 def import_atlas_data(export=False):
     years = ['2010', '2015', '2019']
     atlas_sets = pd.DataFrame()
-    
-    for year in years:
-        #print("Looking at year {}".format(year))
-        Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
-        #print(Atlas_Raw.columns)
 
+    for year in years:
+        Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
         if year == '2010':
             Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
-            Atlas_Filtered = Atlas_Raw[rel_col_2010]
         else:
             Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="Illinois"]
-            Atlas_Filtered = Atlas_Raw[relevant_columns]
         
-        Atlas_Filtered = Atlas_Raw.add_suffix('_{}'.format(year))
+        Atlas_Filtered = Atlas_Raw[['CensusTract', 'LowIncomeTracts', 'LATracts_half', 'lapophalfshare', 'lapophalf']]
+        Atlas_Filtered = Atlas_Filtered.add_suffix('_{}'.format(year))
         Atlas_Filtered.rename(columns={'CensusTract_{}'.format(year): 'CensusTract'}, inplace=True)
-        #print(Atlas_Filtered.columns)
-
 
         if len(atlas_sets) == 0:
             atlas_sets = Atlas_Filtered
@@ -134,7 +92,6 @@ def import_atlas_data(export=False):
     if export:
         atlas_sets.to_csv('atlas_historical.csv')
 
-    #print(atlas_sets.columns)
     return atlas_sets
 
 def one_year(year=None):
@@ -142,56 +99,24 @@ def one_year(year=None):
     Atlas_Raw = Atlas_Raw[Atlas_Raw['State'] == "Illinois"]
     return Atlas_Raw
 
-
-def convert_to_perct_string(value):
+def percentage_string_label(value):
     return f"{value * 100:.1f}%"
 
+def filtered_atlas(export=False, years=['2010', '2015', '2019']):
+    filtered_df = import_atlas_data()
 
-def filtered_atlas(export=False):
-    orig_df = import_atlas_data()
-    #print(orig_df.columns)
-    cols = ['CensusTract']
-
-    # flag for low income tract
-    cols_p1 = [col for col in orig_df if col.startswith('LowIncomeTracts_')]
-    cols.extend(cols_p1)
-
-    # 'lalowihalfshare' low access, low-income population at 1/2 mile, share = Share of tract population that are low income individuals beyond 1/2 mile from supermarket
-    cols_p2 = [col for col in orig_df if col.startswith('LATracts_half_')]
-    cols.extend(cols_p2)
-
-    cols_p3 = [col for col in orig_df if col.startswith('lapophalfshare_')]
-    cols.extend(cols_p3)
-
-    cols_p4 = [col for col in orig_df if col.startswith('lapophalf_')]
-    cols.extend(cols_p4)
-
-    #print(cols)
-    filtered_df = orig_df[cols]
+    # Making some small adjustments to 2019 columns to account for changes to raw data structure
     filtered_df['LowIncomeTracts_2019'] = filtered_df['LowIncomeTracts_2019'].values.astype(np.int64)
     filtered_df['LATracts_half_2019'] = filtered_df['LATracts_half_2019'].values.astype(np.int64)
     filtered_df['lapophalfshare_2019'] = filtered_df['lapophalfshare_2019'] / 100
 
-    filtered_df['lapophalfshare_2010'] = 1 - filtered_df['lapophalfshare_2010']
-    filtered_df['lapophalfshare_2015'] = 1 - filtered_df['lapophalfshare_2015']
-    filtered_df['lapophalfshare_2019'] = 1 - filtered_df['lapophalfshare_2019']
-
-    filtered_df['2010_prop_label'] = filtered_df['lapophalfshare_2010'].apply(lambda x: convert_to_perct_string(x))
-    filtered_df['2015_prop_label'] = filtered_df['lapophalfshare_2015'].apply(lambda x: convert_to_perct_string(x))
-    filtered_df['2019_prop_label'] = filtered_df['lapophalfshare_2019'].apply(lambda x: convert_to_perct_string(x))
+    for year in ['2010', '2015', '2019']:
+        col_name = f"lapophalfshare_{year}"
+        filtered_df[col_name] = 1 - filtered_atlas[col_name]
+        label_column_name = f"{year}_prop_label"
+        filtered_df[label_column_name] = filtered_df[col_name].apply(lambda x: percentage_string_label(x))
 
     if export:
         filtered_df.to_csv('filtered_atlas_update.csv')
 
     return filtered_df
-
-def make_request():
-    time.sleep(0.1)
-    resp = requests.get(census_base_call, params=params)
-    return resp
-
-def import_census():
-    response = requests.get(cbc)
-    body = response.headers
-    return response
-    #print(response)
