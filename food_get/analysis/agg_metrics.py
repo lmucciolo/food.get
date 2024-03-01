@@ -62,6 +62,7 @@ def tracts_metrics_df():
             "Same",
         ),
     )
+    tracts_metrics["GEOID_TRACT_20"] = tracts_metrics["GEOID_TRACT_20"].astype(str)
 
     tracts_metrics = gpd.GeoDataFrame(tracts_metrics)
 
