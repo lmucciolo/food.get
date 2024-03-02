@@ -1,70 +1,15 @@
 import requests
 import pandas as pd
+import pathlib
 from lxml import html
+import json
 
-# change read path 
-illinois_counties = pd.read_csv('/Users/daniellerosenthal/Downloads/illinois_counties.txt', sep='|', dtype=str)
-
-state_name_fips_dict = {
-    'Alabama': '01',
-    'Alaska': '02',
-    'Arizona': '04',
-    'Arkansas': '05',
-    'California': '06',
-    'Colorado': '08',
-    'Connecticut': '09',
-    'Delaware': '10',
-    'Florida': '12',
-    'Georgia': '13',
-    'Hawaii': '15',
-    'Idaho': '16',
-    'Illinois': '17',
-    'Indiana': '18',
-    'Iowa': '19',
-    'Kansas': '20',
-    'Kentucky': '21',
-    'Louisiana': '22',
-    'Maine': '23',
-    'Maryland': '24',
-    'Massachusetts': '25',
-    'Michigan': '26',
-    'Minnesota': '27',
-    'Mississippi': '28',
-    'Missouri': '29',
-    'Montana': '30',
-    'Nebraska': '31',
-    'Nevada': '32',
-    'New Hampshire': '33',
-    'New Jersey': '34',
-    'New Mexico': '35',
-    'New York': '36',
-    'North Carolina': '37',
-    'North Dakota': '38',
-    'Ohio': '39',
-    'Oklahoma': '40',
-    'Oregon': '41',
-    'Pennsylvania': '42',
-    'Rhode Island': '44',
-    'South Carolina': '45',
-    'South Dakota': '46',
-    'Tennessee': '47',
-    'Texas': '48',
-    'Utah': '49',
-    'Vermont': '50',
-    'Virginia': '51',
-    'Washington': '53',
-    'West Virginia': '54',
-    'Wisconsin': '55',
-    'Wyoming': '56',
-    'American Samoa': '60',
-    'Guam': '66',
-    'Northern Mariana Islands': '69',
-    'Puerto Rico': '72',
-    'Virgin Islands': '78'}
+illinois_counties = pd.read_csv(pathlib.Path(__file__).parent / "../data/illinois_counties_guide.csv")
+with open('state_fips.json') as json_file:
+    state_name_fips_dict = json.load(json_file)
 
 """
-All available variables for the 2022 ACS Data Profiles can be found here
-https://api.census.gov/data/2022/acs/acs5/profile/variables.html
+
 
 """
 
@@ -86,9 +31,13 @@ def tract_level_extract(table=None, variables=None, state_fips_code=None, county
         5-Year Data Profiles at the census tract level. Can filter data by state and county,
         however the current implementation does not support filtering by county
         without specifying a state first. 
+
+
+    All available variables for the 2022 ACS Data Profiles can be found here
+        https://api.census.gov/data/2022/acs/acs5/profile/variables.html
     
     Args:
-        table (str): 
+        table (str): name of the Data Profiles table
         variables (list of strings): the name of the state
         state_fips_code (str): FIPS code for the state
         county_code (str): FIPS code for the county
@@ -137,7 +86,7 @@ def tract_level_extract(table=None, variables=None, state_fips_code=None, county
 def census_tract_metrics(export=False, state='Illinois', county='Cook County'):
     """"
     Returns dataframe with tract level information required for building the 
-        <INSERT NAME OF METRIC> for 2022.
+        low access metric for 2022.
     
     Args:
         export (bool): of True, the function will create a csv of the resulting dataframe
