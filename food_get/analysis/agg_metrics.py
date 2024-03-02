@@ -62,11 +62,11 @@ def tracts_metrics_df():
 
     # Creating column with label for whether 2010 to 2022 metric improved
     tracts_metrics["10_22_diff"] = np.where(
-        tracts_metrics["lapophalfshare_2022"] < tracts_metrics["lapophalfshare_2010"],
+        tracts_metrics["lapophalfshare_2022"] < tracts_metrics["lapophalfshare_2019"],
         "Worse",
         np.where(
             tracts_metrics["lapophalfshare_2022"]
-            > tracts_metrics["lapophalfshare_2010"],
+            > tracts_metrics["lapophalfshare_2019"],
             "Better",
             "Same",
         ),
