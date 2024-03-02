@@ -13,6 +13,7 @@ Description:
 import pandas as pd
 import numpy as np
 import requests
+import pathlib
 
 from census_data_pull import census_tract_metrics
 #from data_extract_sg import import_grocery_store_data, import_snap_retailers_data
@@ -68,6 +69,9 @@ def import_atlas_data(export=False):
 
     for year in years:
         Atlas_Raw = pd.read_csv('raw_atlas_data/Atlas{}.csv'.format(year))
+
+
+        Atlas_Raw = pd.read_csv(pathlib.Path(__file__).parent / "../data/raw_atlas_data/Atlas{}.csv".format(year))
         if year == '2010':
             Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
         else:
