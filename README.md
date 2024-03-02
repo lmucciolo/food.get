@@ -9,7 +9,7 @@ Examining food access in Chicago post-pandemic.
 - [Stacy George](https://github.com/stacy-george) 
 
 ## Introduction
-The project aims to analyze..
+The project aims to analyze food access and security within the Chicago area. The scope of this work provides an updated food access metric for 2022 to understand communities’ post-pandemic food access and shows how food access has changed in the city over time.
 
 ## Installation
 Note can only be run with 
@@ -39,7 +39,6 @@ poetry shell
 ```
 <br />
 
-
 **Execute the project by running:**
 ```bash
 python -m food.get
@@ -59,7 +58,6 @@ Dash is running on http://127.0.0.1:8051/
  * Running on http://127.0.0.1:8051
 Press CTRL+C to quit
 ```
-<br />
 
 ## Overall Notes
 If you encounter issues with Dash or ... please run the following commands within the poetry shell:
