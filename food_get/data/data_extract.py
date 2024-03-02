@@ -79,7 +79,7 @@ def filtered_atlas(export=False, years=['2010', '2015', '2019']):
 
     for year in years:
         col_name = f"lapophalfshare_{year}"
-        filtered_df[col_name] = 1 - filtered_atlas[col_name]
+        filtered_df[col_name] = 1 - filtered_df[col_name]
         label_column_name = f"{year}_prop_label"
         filtered_df[label_column_name] = filtered_df[col_name].apply(lambda x: percentage_string_label(x))
 
