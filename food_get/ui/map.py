@@ -233,33 +233,33 @@ def map_2022_settings(metrics_df, grocery_df, m):
 
         return default_style
 
-    # def style_function_2022_lowi(feature):
-    #     default_style = {
-    #         "opacity": 1.0,
-    #         "fillColor": "#ffff00",
-    #         "color": "black",
-    #         "weight": 2,
-    #     }
-    #     if feature["properties"]["lapophalfshare_2022"] is not None:
-    #         if feature["properties"]["lapophalfshare_2022"] <= 1 / 3:
-    #             default_style["fillColor"] = colors_2022[0]
-    #             default_style["fillOpacity"] = 0.7
-    #             if feature["properties"]["LowIncomeTracts_2022"] == 1:
-    #                 default_style["fillPattern"] = stripes_lowa
-    #         elif feature["properties"]["lapophalfshare_2022"] <= 2 / 3:
-    #             default_style["fillColor"] = colors_2022[1]
-    #             default_style["fillOpacity"] = 0.7
-    #             if feature["properties"]["LowIncomeTracts_2022"] == 1:
-    #                 default_style["fillPattern"] = stripes_meda
-    #         else:
-    #             default_style["fillColor"] = colors_2022[2]
-    #             default_style["fillOpacity"] = 0.7
-    #             if feature["properties"]["LowIncomeTracts_2022"] == 1:
-    #                 default_style["fillPattern"] = stripes_higha
-    #     else:
-    #         default_style["fillPattern"] = circles
+    def style_function_2022_lowi(feature):
+        default_style = {
+            "opacity": 1.0,
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+        }
+        if feature["properties"]["lapophalfshare_2022"] is not None:
+            if feature["properties"]["lapophalfshare_2022"] <= 1 / 3:
+                default_style["fillColor"] = colors_2022[0]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2022"] == 1:
+                    default_style["fillPattern"] = stripes_lowa
+            elif feature["properties"]["lapophalfshare_2022"] <= 2 / 3:
+                default_style["fillColor"] = colors_2022[1]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2022"] == 1:
+                    default_style["fillPattern"] = stripes_meda
+            else:
+                default_style["fillColor"] = colors_2022[2]
+                default_style["fillOpacity"] = 0.7
+                if feature["properties"]["LowIncomeTracts_2022"] == 1:
+                    default_style["fillPattern"] = stripes_higha
+        else:
+            default_style["fillPattern"] = circles
 
-    #     return default_style
+        return default_style
 
     def style_function_diff(feature):
         default_style = {
