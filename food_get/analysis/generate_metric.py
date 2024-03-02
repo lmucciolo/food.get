@@ -14,8 +14,10 @@ from food_get.data.cleanup_sg import clean_grocery_stores
 from food_get.data.data_extract_census import restrict_tract_to_shore
 import geopandas as gpd
 import pandas as pd
+import pathlib
 
 M_TO_MILES = 1609.34
+COUNTY_HH_INCOME = 78304
 
 
 def create_buffers():
@@ -135,9 +137,7 @@ def identify_low_access(ratios_df):
         A GeoDataFrame of 2020 Census tracts with a low_access indiciator column
 
     """
-    ratios_df["low_access"] = ratios_df.apply(
-        lambda x: 1 if x["ratio"] < 1 / 3 else 0, axis=1
-    )
+    ratios_df["low_access"] = ratios_df.apply(lambda x: 1 if x['ratio'] < 1/3 else 0, axis=1) 
 
     return ratios_df
 
@@ -145,8 +145,9 @@ def identify_low_access(ratios_df):
 def identify_low_income(tracts_with_access_label):
     """
     This function identifies 2020 Census tracts as low-income. If the Census
-    tract pverty rate is greater than 20 percent, then the tract is considered
-    low-access.
+    tract's median household income is  less than or equal to 80 percent of the
+    metropolitan area's (in this case County) median family income, then the 
+    tract is considered low-access.
 
     Inputs:
         tracts_with_access_label (GeoDataFrame): contains all tract information
@@ -156,8 +157,25 @@ def identify_low_income(tracts_with_access_label):
         A GeoDataFrame of 2020 Census tracts with a low_income indiciator column
 
     """
-    # merge tracts dataframe with income data frame
+    # pull in census 2022 income data for the tract level
+    income_census = pd.read_csv(pathlib.Path(__file__).parent / "../data/census_2022.csv")
 
-    # if census tract poverty rate >20% then low-income
+    # create variable for tract id
+    income_census.loc[income_census['tract'] < 100000, 'tract_id'] = income_census["state"].astype(str) + "0" + \
+    income_census["county"].astype(str) + "0" + income_census["tract"].astype(str)
+    income_census.loc[income_census['tract'] >= 100000, 'tract_id'] = income_census["state"].astype(str) + "0" + \
+    income_census["county"].astype(str) + income_census["tract"].astype(str)
+    
+    # keep only necessary variables
+    income_census = income_census.rename(columns={"DP03_0062E": "median_hh_income"})
+    income_census = income_census[["median_hh_income", "tract_id"]]
+
+    # merge census data with tract data
+    tracts_with_access_label = tracts_with_access_label.merge(income_census, how='left', on='tract_id')
+
+    # if census tract median hh income <=80% county hh income then low-income
+    tracts_with_access_label["low_income"] = \
+        tracts_with_access_label.apply(lambda x: 1 if x["median_hh_income"] 
+                                       <= 0.8*COUNTY_HH_INCOME else 0, axis=1)
 
     return tracts_with_access_label
