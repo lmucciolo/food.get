@@ -2,11 +2,13 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 import pathlib
-from food_get.data.data_extract_census import full_chi_10_20_tracts_one_mapping
+from food_get.data.extract_tracts import (
+    full_chi_10_20_tracts_one_mapping,
+    tracts_2010_key,
+)
 from food_get.analysis.generate_metric import create_buffers, find_intersections
-from food_get.data.data_extract_census import tracts_2010_key
-from food_get.data.cleanup_sg import clean_grocery_stores, clean_snap_retailer_data
-from food_get.data.data_extract import filtered_atlas
+from food_get.data.cleanup_grocery import clean_grocery_stores, clean_snap_retailer_data
+from food_get.data.extract_atlas import filtered_atlas
 from food_get.data.match_groceries import match_grocery_stores
 
 
@@ -84,7 +86,7 @@ def track_comparison_df():
     Args: None
 
     Returns:
-        tracts_keep (GeoDataFrame): census tracts with one-to-one mappings 
+        tracts_keep (GeoDataFrame): census tracts with one-to-one mappings
             we are using to compare 2010 to 2020
         tracts_drop (GeoDataFrame): tracts which do not map one-to-one for 2010
             to 2020
