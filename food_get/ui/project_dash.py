@@ -9,16 +9,20 @@ from food_get.ui.map import (
     create_historic_map,
     create_total_map
     )
-from food_get.analysis.agg_metrics import tracts_metrics_df
+from food_get.analysis.agg_metrics import (
+    tracts_metrics_df, 
+    grocery_stores_df
+    )
 
 # Data prep
-df = tracts_metrics_df()
+metrics_df = tracts_metrics_df()
+grocery_df = grocery_stores_df()
 
 # Create maps
 create_tracks_inclusion("tract_map")
-create_historic_map(df, "historic_map")
-# create_2022_map(df,"2022_map")
-# create_total_map(df,"total_map")
+create_historic_map(metrics_df, "historic_map")
+create_2022_map(metrics_df,grocery_df, "2022_map")
+create_total_map(metrics_df, grocery_df, "total_map")
 
 # Define colors
 def colors():
