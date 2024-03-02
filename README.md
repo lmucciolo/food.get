@@ -31,7 +31,7 @@ poetry install
 
 ## Usage
 Project **must** be run in the Poetry virtual environment. 
-Upon completion of above installation requirements and within the project terminal, 
+Upon completion of the above installation requirements and within the project terminal, 
 and on each subsequent rendering of the project, initialize the virtual environment by running:
 
 ```bash
@@ -41,9 +41,9 @@ poetry shell
 
 **Execute the project by running:**
 ```bash
-python -m food.get
+python -m food_get
 ```
-<sub> This command may take a minute to load project to terminal.</sub>
+<sub> This command may take a minute to load the project to terminal.</sub>
 <br />
 <br />
 
