@@ -31,7 +31,7 @@ def import_atlas_data(export=False, years=['2010', '2015', '2019']):
     atlas_sets = pd.DataFrame()
 
     for year in years:
-        Atlas_Raw = pd.read_csv(pathlib.Path(__file__).parent / "../data/raw_atlas_data/Atlas{}.csv".format(year))
+        Atlas_Raw = pd.read_csv(pathlib.Path(__file__).parent / "../data/raw_atlas_files/Atlas{}.csv".format(year))
         
         Atlas_Filtered = Atlas_Raw[['CensusTract', 'LowIncomeTracts', 'LATracts_half', 'lapophalfshare', 'lapophalf']]
         Atlas_Filtered = Atlas_Filtered.add_suffix('_{}'.format(year))
@@ -79,7 +79,7 @@ def filtered_atlas(export=False, years=['2010', '2015', '2019']):
 
     for year in years:
         col_name = f"lapophalfshare_{year}"
-        filtered_df[col_name] = 1 - filtered_atlas[col_name]
+        filtered_df[col_name] = 1 - filtered_df[col_name]
         label_column_name = f"{year}_prop_label"
         filtered_df[label_column_name] = filtered_df[col_name].apply(lambda x: percentage_string_label(x))
 

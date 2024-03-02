@@ -227,12 +227,12 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "The Food Access Research Atlas, created by the Economic Research Service using ESRI ArcGIS Server technology, provides detailed maps of food access indicators for census tracts. Utilizing demarcations based on distance to the nearest supermarket and vehicle availability, the Atlas allows users to explore and compare food access dynamics at the census-tract level. Data for 2019 and 2015, derived from supermarket lists, the 2010 Decennial Census, and the American Community Survey, enable users to analyze changes over time and make informed assessments of food access in different regions. The Atlas complements the broader Food Environment Atlas, offering specific insights into food access at a more localized level.",
+                                        "The Food Access Research Atlas, created by the Economic Research Service provides detailed information of food access indicators by census tracts. Utilizing demarcations based on distance to the nearest supermarket and vehicle availability, the Atlas allows users to compare food access dynamics at the census-tract level. Data for 2019, 2015, and 2010 is derived from supermarket lists, the 2010 Decennial Census, and the American Community Survey. This data offers specific insights into food access at a localized level.",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "The map visualizes the past trends of food access in the city. The darker the color, the lower the food access. Low income is indicated by the stripped pattern. ",
+                                        "The map visualizes the past trends of food access in the city. The darker the color, the lower the food access. Additionally, low income is indicated by the stripped pattern.",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
@@ -367,7 +367,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("tract_map.html", "r").read(),
+                                        srcDoc=open("total_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
@@ -430,7 +430,13 @@ def generate_layout(table_width):
                     ),
                     html.Div(
                         [
-                            # Add the DataTable here
+                            html.H3(
+                                "Project Data Sources",
+                                style={
+                                    "margin-bottom": "0.8em",
+                                    "margin-left": "0.25in",
+                                },
+                            ),
                             dash_table.DataTable(
                                 id="data-table",
                                 columns=[
