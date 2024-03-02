@@ -25,9 +25,10 @@ def tracts_metrics_df():
     # Pulling in tract boundaries dataframe
     all_tracts = full_chi_10_20_tracts_one_mapping()
     all_tracts["GEOID_TRACT_20"] = all_tracts["GEOID_TRACT_20"].astype(int)
-
+    all_tracts["GEOID_TRACT_10"] = all_tracts["GEOID_TRACT_10"].astype(int)
     # Importing historical Atlas dataset
     atlas_hist = filtered_atlas()
+    atlas_hist["CensusTract"] = atlas_hist["CensusTract"].astype(int)
 
     # Importing 2022 metric
     stores = create_buffers()
@@ -43,22 +44,19 @@ def tracts_metrics_df():
     )
     metric_2022["tract_id"] = metric_2022["tract_id"].astype(int)
 
-    # Merging historic Atlas data with 2022 metric
-    all_metrics = metric_2022.merge(
-        atlas_hist, how="left", left_on="tract_id", right_on="CensusTract"
+    # Merging 2022 metric with bounds
+    metrics_2022_bounds = all_tracts.merge(
+        metric_2022, how="left", left_on="GEOID_TRACT_20", right_on="tract_id"
     )
 
-    drop = [
-        "CensusTract",
-    ]
-    all_metrics.drop(drop, axis=1, inplace=True)
+    metrics_2022_bounds.drop(["tract_id"], axis=1, inplace=True)
 
-    # Merge metrics dataframe with census tracts information
-    tracts_metrics = all_tracts.merge(
-        all_metrics, how="left", left_on="GEOID_TRACT_20", right_on="tract_id"
+    # Merge 2022 with historic
+    tracts_metrics = metrics_2022_bounds.merge(
+        atlas_hist, how="left", left_on="GEOID_TRACT_10", right_on="CensusTract"
     )
 
-    tracts_metrics.drop(["tract_id"], axis=1, inplace=True)
+    tracts_metrics.drop(["CensusTract"], axis=1, inplace=True)
 
     # Creating column with label for whether 2010 to 2022 metric improved
     tracts_metrics["10_22_diff"] = np.where(
