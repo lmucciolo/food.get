@@ -2,6 +2,11 @@ import folium
 from folium import plugins
 from food_get.analysis.agg_metrics import track_comparison_df
 
+# chart titles "Census Tract Boundaries 2020"
+# Historical Food Atlas Metrics
+# Constructed 2022 Food Atlas Metric
+# All Food Atlas Metrics
+
 
 def create_base_map():
     """
@@ -106,7 +111,7 @@ def map_tract_inclusion_settings(m):
 
     tooltip1 = folium.GeoJsonTooltip(
         fields=["geoid10"],
-        aliases=["Tract Name:"],
+        aliases=["Tract ID:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -148,26 +153,26 @@ def map_tract_inclusion_settings(m):
     )
 
     folium.GeoJson(
-        tracts_keep_shore,
-        name="Keep Minus Shore",
-        style_function=lambda x: styleKeep,
-        overlay=False,
-        show=True,
-        tooltip=tooltip3,
-    ).add_to(m)
-
-    folium.GeoJson(
         tracts_keep,
-        name="Keeping Full",
+        name="Keep with Waterways",
         style_function=lambda x: styleKeepShore,
         overlay=False,
-        show=False,
+        show=True,
         tooltip=tooltip1,
     ).add_to(m)
 
     folium.GeoJson(
+        tracts_keep_shore,
+        name="Keep without Waterways",
+        style_function=lambda x: styleKeep,
+        overlay=False,
+        show=False,
+        tooltip=tooltip3,
+    ).add_to(m)
+
+    folium.GeoJson(
         tracts_drop,
-        name="Dropping",
+        name="Dropped Tracts",
         style_function=lambda x: styleDrop,
         overlay=True,
         show=True,
@@ -176,7 +181,7 @@ def map_tract_inclusion_settings(m):
 
     folium.GeoJson(
         lake,
-        name="Lake",
+        name="Waterways",
         style_function=lambda x: styleLake,
         overlay=True,
         show=False,
@@ -189,7 +194,7 @@ def map_2022_settings(metrics_df, grocery_df, m):
     No return
     """
     # styles
-    colors_2022 = ["#e34a33", "#fdbb84", "#fee8c8"]  # dark  # med  # light
+    colors_2022 = ["#8856a7", "#9ebcda", "#e0ecf4"]  # dark  # med  # light
 
     stripes_lowa = folium.plugins.pattern.StripePattern(
         angle=-45, opacity=1, color=colors_2022[0]
@@ -281,8 +286,8 @@ def map_2022_settings(metrics_df, grocery_df, m):
         return default_style
 
     tooltip_22 = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2022"],
-        aliases=["Tract Name:", "2022 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2022_prop_label"],
+        aliases=["Tract ID:", "2022 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -305,8 +310,8 @@ def map_2022_settings(metrics_df, grocery_df, m):
     ).add_to(m)
 
     tooltip_22_lowi = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2022"],
-        aliases=["Tract Name:", "2022 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2022_prop_label"],
+        aliases=["Tract ID:", "2022 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -321,7 +326,7 @@ def map_2022_settings(metrics_df, grocery_df, m):
 
     folium.GeoJson(
         metrics_df,
-        name="2022 Access Proportion with Low Income",
+        name="2022 Access Proportion with Low-Income",
         style_function=style_function_2022_lowi,
         tooltip=tooltip_22_lowi,
         overlay=False,
@@ -336,10 +341,10 @@ def map_2022_settings(metrics_df, grocery_df, m):
             "10_22_diff",
         ],
         aliases=[
-            "Tract Name:",
-            "2019 Low Access Proportion:",
-            "2022 Low Access Proportion:",
-            "Change in Food Access 2010-2022:",
+            "Tract ID:",
+            "2019 Low-Access Proportion:",
+            "2022 Low-Access Proportion:",
+            "2019-2022 Change in Food Access:",
         ],
         localize=True,
         sticky=False,
@@ -355,7 +360,7 @@ def map_2022_settings(metrics_df, grocery_df, m):
 
     folium.GeoJson(
         metrics_df,
-        name="Change in Food Access",
+        name="2019-2022 Change in Food Access",
         style_function=style_function_diff,
         tooltip=tooltip_diff,
         overlay=False,
@@ -363,8 +368,8 @@ def map_2022_settings(metrics_df, grocery_df, m):
     ).add_to(m)
 
     tooltip_groc = folium.GeoJsonTooltip(
-        fields=["store_name", "address"],
-        aliases=["Store Name:", "Address:"],
+        fields=["store_name", "address", "is_snap_map"],
+        aliases=["Store Name:", "Address:", "SNAP Eligible:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -574,8 +579,8 @@ def map_historic_settings(df, m):
     ).add_to(m)
 
     tooltip_10 = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2010"],
-        aliases=["Tract Name:", "2010 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2010_prop_label"],
+        aliases=["Tract ID:", "2010 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -588,8 +593,8 @@ def map_historic_settings(df, m):
         max_width=800,
     )
     tooltip_10_lowi = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2010"],
-        aliases=["Tract Name:", "2010 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2010_prop_label"],
+        aliases=["Tract ID:", "2010 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -603,8 +608,8 @@ def map_historic_settings(df, m):
     )
 
     tooltip_15 = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2015"],
-        aliases=["Tract Name:", "2015 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2015_prop_label"],
+        aliases=["Tract ID:", "2015 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -618,8 +623,8 @@ def map_historic_settings(df, m):
     )
 
     tooltip_15_lowi = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2015"],
-        aliases=["Tract Name:", "2015 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2015_prop_label"],
+        aliases=["Tract ID:", "2015 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -633,8 +638,8 @@ def map_historic_settings(df, m):
     )
 
     tooltip_19 = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2019"],
-        aliases=["Tract Name:", "2019 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2019_prop_label"],
+        aliases=["Tract ID:", "2019 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -648,8 +653,8 @@ def map_historic_settings(df, m):
     )
 
     tooltip_19_lowi = folium.GeoJsonTooltip(
-        fields=["GEOID_TRACT_20", "lapophalfshare_2019"],
-        aliases=["Tract Name:", "2019 Low Access Proportion:"],
+        fields=["GEOID_TRACT_20", "2019_prop_label"],
+        aliases=["Tract ID:", "2019 Low-Access Proportion:"],
         localize=True,
         sticky=False,
         labels=True,
@@ -673,7 +678,7 @@ def map_historic_settings(df, m):
 
     folium.GeoJson(
         df,
-        name="2010 Access Proportion and Low Income",
+        name="2010 Access Proportion and Low-Income",
         style_function=style_function_2010_lowi,
         tooltip=tooltip_10_lowi,
         overlay=False,
@@ -691,7 +696,7 @@ def map_historic_settings(df, m):
 
     folium.GeoJson(
         df,
-        name="2015 Access Proportion and Low Income",
+        name="2015 Access Proportion and Low-Income",
         style_function=style_function_2015_lowi,
         tooltip=tooltip_15_lowi,
         overlay=False,
@@ -709,7 +714,7 @@ def map_historic_settings(df, m):
 
     folium.GeoJson(
         df,
-        name="2019 Access Proportion and Low Income",
+        name="2019 Access Proportion and Low-Income",
         style_function=style_function_2019_lowi,
         tooltip=tooltip_19_lowi,
         overlay=False,
