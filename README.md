@@ -26,7 +26,7 @@ poetry install
 
 ## Usage
 Project **must** be run in the Poetry virtual environment. 
-Upon completion of the above installation requirements and within the project terminal, 
+Upon completion of the above installation requirements within the project terminal, 
 and on each subsequent rendering of the project, initialize the virtual environment by running:
 
 ```bash
