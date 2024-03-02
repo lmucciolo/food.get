@@ -11,23 +11,14 @@ from food_get.ui.map import (
     )
 from food_get.analysis.agg_metrics import tracts_metrics_df
 
-# # data prep
-# df = tracts_metrics_df()
+# Data prep
+df = tracts_metrics_df()
 
 # Create maps
 create_tracks_inclusion("tract_map")
-# create_historic_map(df, "historic_map")
+create_historic_map(df, "historic_map")
 # create_2022_map(df,"2022_map")
 # create_total_map(df,"total_map")
-
-# Folium map
-map_center = [41.8781, -87.6298]
-folium_map = folium.Map(location=map_center, zoom_start=12)
-marker_location = [41.8781, -87.6298]
-folium.Marker(location=marker_location, popup='Chicago').add_to(folium_map)
-folium_map.save('folium_map.html')
-
-
 
 # Define colors
 def colors():
@@ -62,7 +53,7 @@ table_data = [
     {
         "Data Source": "Chicago Grocery Store Data",
         "Collection Method": "csv download",
-        "Data Year": "2018",
+        "Data Year": "2020",
     },
     {
         "Data Source": "USDA SNAP",
@@ -175,8 +166,18 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "The project aims to analyze food access and security within the Chicago area. The scope of this work shows how food access has changed in the city over time and provides an updated food access metric for 2022 to understand communities’ post-pandemic food access. The data underpinning the historical component of the project includes Atlas Food Access Research data from 2019, 2015, and 2010. To recreate a more recent metric, grocery store and snap locations of the City of Chicago data are paired with demographic information from the United States census. For understanding and consumption, the project findings are presented in a Dash web application containing several interactive maps.",
-                                        style={"padding": "0.25in", "height": "100%"},
+                                        "The project aims to analyze food access and security within the Chicago area. The scope of this work shows how food access has changed in the city over time and provides an updated food access metric for 2022 to understand communities’ post-pandemic food access. ",
+                                        style={"padding": "0.25in"},
+                                    ),
+                                    html.Br(),
+                                    html.P(
+                                        "The map to the right depicts the census tracts that compose Chicago. Notably, census tracts extend into the shoreline. For the recreation of the post-pandemic food access metric, the shoreline has been removed. Additionally, the 2020 census redefined tract lines. Any changes in tract definition resulted in the tract being completely dropped for our analysis.",
+                                        style={"padding": "0.25in"},
+                                    ),
+                                    html.Br(),
+                                    html.P(
+                                        "Map Interaction: Viewers can toggle between options to see the shoreline changes, where water is in relation to the city, and which census tracts have been dropped.",
+                                        style={"padding": "0.25in"},
                                     ),
                                 ],
                                 style={
@@ -222,12 +223,17 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "The Healthy Food Financing Initiative aims to address the challenge of limited access to healthy and affordable food in the United States by expanding the availability of nutritious options in underserved communities. This initiative focuses on developing grocery stores, small retailers, corner markets, and farmers' markets to improve food access. It utilizes various indicators, including distance to stores, individual-level resources such as income and vehicle availability, and neighborhood-level indicators like average income and public transportation availability, to define and address low-income and low-access areas.",
+                                        "The Food Access Research Atlas, created by the Economic Research Service using ESRI ArcGIS Server technology, provides detailed maps of food access indicators for census tracts. Utilizing demarcations based on distance to the nearest supermarket and vehicle availability, the Atlas allows users to explore and compare food access dynamics at the census-tract level. Data for 2019 and 2015, derived from supermarket lists, the 2010 Decennial Census, and the American Community Survey, enable users to analyze changes over time and make informed assessments of food access in different regions. The Atlas complements the broader Food Environment Atlas, offering specific insights into food access at a more localized level.",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "The Food Access Research Atlas, created by the Economic Research Service using ESRI ArcGIS Server technology, provides detailed maps of food access indicators for census tracts. Utilizing demarcations based on distance to the nearest supermarket and vehicle availability, the Atlas allows users to explore and compare food access dynamics at the census-tract level. Data for 2019 and 2015, derived from supermarket lists, the 2010 Decennial Census, and the American Community Survey, enable users to analyze changes over time and make informed assessments of food access in different regions. The Atlas complements the broader Food Environment Atlas, offering specific insights into food access at a more localized level.",
+                                        "The map visualizes the past trends of food access in the city. The darker the color, the lower the food access. Low income is indicated by the stripped pattern. ",
+                                        style={"padding": "0.25in"},
+                                    ),
+                                    html.Br(),
+                                    html.P(
+                                        "Map Interaction: Viewers can toggle between options to switch between historical years.",
                                         style={"padding": "0.25in"},
                                     ),
                                 ],
@@ -241,7 +247,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("tract_map.html", "r").read(),
+                                        srcDoc=open("historic_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
@@ -275,12 +281,17 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "Content for Recreated Metric container goes here.",
+                                        "Inorder to have a post-pandemic understanding of food access in the city, our team generated new low access and low income metrics. To find the percent of a census tract that has access to a grocery store within a half mile, first the process creates ½ mile buffers around grocery stores in Chicago. These buffer boundaries are then overlaid with census tract boundaries to find the area that is not covered by the grocery store buffers (i.e., difference area). To find the ratio, or percent, of a tract that is serviced by a grocery store within a half mile radius, we take one minus the difference area over the tract area. Once each tract has an associated ratio, we classify them as low access if the ratio is less than 33%. For the low income metric, we compare each tract’s median household income to the county-wide (Cook County) median household income. If the tract’s median household income is less than or equal to 80 percent of the county's median household income, then the tract is labeled as low income.",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "Additional details and content for Recreated Metric.",
+                                        "This map shows",
+                                        style={"padding": "0.25in"},
+                                    ),
+                                                                        html.Br(),
+                                    html.P(
+                                        "Map interaction:",
                                         style={"padding": "0.25in"},
                                     ),
                                 ],
@@ -328,12 +339,17 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "Content for Conclusion container goes here.",
+                                        "The goal of this project is to understand Chicago’s historical food access and recreate the Atlas food metric with data post-pandemic to better understand a more recent food landscape in Chicago.",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "Additional details and content for Conclusion.",
+                                        "This map compiles all the interactions from previous sections into one.",
+                                        style={"padding": "0.25in"},
+                                    ),
+                                    html.Br(),
+                                    html.P(
+                                        "Map interaction:",
                                         style={"padding": "0.25in"},
                                     ),
                                 ],
@@ -400,6 +416,16 @@ def generate_layout(table_width):
                                     ])
                                 ]),
                             ]),
+                        ],
+                        style={
+                            "width": "40%",
+                            "float": "left",
+                            "background-color": colors()["g2_color"],
+                            "margin-left": "0.25in",
+                        },
+                    ),
+                    html.Div(
+                        [
                             # Add the DataTable here
                             dash_table.DataTable(
                                 id="data-table",
@@ -416,22 +442,6 @@ def generate_layout(table_width):
                                 },
                                 style_cell={"textAlign": "center"},
                             ),
-                        ],
-                        style={
-                            "width": "40%",
-                            "float": "left",
-                            "background-color": colors()["g2_color"],
-                            "margin-left": "0.25in",
-                        },
-                    ),
-                    html.Div(
-                        [
-                            html.Iframe(
-                                srcDoc=open("folium_map.html", "r").read(),
-                                width="100%",
-                                height="600px",
-                                style={"margin-left": "0.25in", "margin-right": "0.25in"},
-                            )
                         ],
                         style={"width": "50%", "float": "left"},
                     ),

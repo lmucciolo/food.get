@@ -5,8 +5,9 @@ import pathlib
 from food_get.data.data_extract_census import full_chi_10_20_tracts_one_mapping
 from food_get.analysis.generate_metric import create_buffers, find_intersections
 from food_get.data.data_extract_census import tracts_2010_key
-from food_get.data.cleanup_sg import clean_grocery_stores
+from food_get.data.cleanup_sg import clean_grocery_stores, clean_snap_retailer_data
 from food_get.data.data_extract import filtered_atlas
+from food_get.data.match_groceries import match_grocery_stores
 
 
 def tracts_metrics_df():
@@ -19,7 +20,7 @@ def tracts_metrics_df():
 
     # historic atlas data
     atlas_hist = pd.read_csv(
-        "/Users/stacygeorge/Documents/capp30122/food.get/food_get/data/filtered_atlas_update.csv"
+        pathlib.Path(__file__).parent / "../data/filtered_atlas_update.csv"
     )
     
     # atlas_hist = filtered_atlas()
@@ -94,14 +95,18 @@ def grocery_stores_df():
     Create the data frames used for grocery store mapping
     """
     clean_groc = clean_grocery_stores()
-    clean_groc_gdf = gpd.GeoDataFrame(
-        clean_groc,
+    clean_snap = clean_snap_retailer_data()
+    groc_merge = match_grocery_stores(clean_groc, clean_snap)
+    groc_merge["is_snap_map"] = np.where(groc_merge["is_snap"], "Yes", "No")
+
+    groc_gdf = gpd.GeoDataFrame(
+        groc_merge,
         geometry=gpd.points_from_xy(clean_groc.longitude, clean_groc.latitude),
         crs="EPSG:4326",
     )
-    clean_groc_gdf = clean_groc_gdf[clean_groc_gdf["longitude"].notna()]
+    groc_gdf = groc_gdf[groc_gdf["longitude"].notna()]
 
-    return clean_groc_gdf
+    return groc_gdf
 
 
 # create proportions (times by 100)
