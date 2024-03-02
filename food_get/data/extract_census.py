@@ -7,7 +7,7 @@ import json
 illinois_counties = pd.read_csv(
     pathlib.Path(__file__).parent / "../data/illinois_counties_guide.csv"
 )
-with open("state_fips.json") as json_file:
+with open(pathlib.Path(__file__).parent / "../data/state_fips.json") as json_file:
     state_name_fips_dict = json.load(json_file)
 
 """
@@ -191,7 +191,11 @@ def get_county_code(county):
             illinois_counties["COUNTYNAME"] == county
         ].reset_index()
         county_code = county_info["COUNTYFP"][0]
-
+        county_code = str(county_code)
+        if len(county_code) == 1:
+            county_code = "00"+county_code
+        elif len(county_code) == 2:
+            county_code = "0"+county_code
     else:
         raise KeyError("You have not entered a correct Illinois county name")
 

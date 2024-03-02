@@ -96,6 +96,7 @@ def filtered_atlas(export=False, years=["2010", "2015", "2019"]):
     filtered_df["LATracts_half_2019"] = filtered_df["LATracts_half_2019"].values.astype(
         np.int64
     )
+    filtered_df['lapophalfshare_2019'] = filtered_df['lapophalfshare_2019'].fillna(0)
     filtered_df["lapophalfshare_2019"] = filtered_df["lapophalfshare_2019"] / 100
 
     for year in years:
