@@ -1,3 +1,17 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: extract_census.py
+Author: Danielle Rosenthal
+
+Notes:
+    * In the current implementation we only support searching for Illinois counties
+
+Description:
+    This file scrapes the US Census 2022 5-Year Estimate Data Profiles tables.
+"""
+import warnings
+warnings.simplefilter(actions='ignore', category=FutureWarning)
 import requests
 import pandas as pd
 import pathlib
@@ -9,12 +23,6 @@ illinois_counties = pd.read_csv(
 )
 with open(pathlib.Path(__file__).parent / "../data/state_fips.json") as json_file:
     state_name_fips_dict = json.load(json_file)
-
-"""
-
-
-"""
-
 
 def json_to_df(response):
     """

@@ -2,15 +2,15 @@
 Project: Analyzing food access and security in Chicago
 Team: food.get
 File Name: extract_atlas.py
-Authors: Danielle Rosenthal and Stacy George
-Note: 
-    * Danielle created import_atlas_data
-    * Stacy created import_business_liscense_data and import_snap_retailers_data
+Author: Danielle Rosenthal
 
 Description:
-    This file imports all the raw data from their source
+    This file imports historic USDA Food Atlas Research Data for 2010, 2015, and 2019
+    and combines them into one dataframe based on what is required for the map
+    visualization.
 """
-
+import warnings
+warnings.simplefilter(actions='ignore', category=FutureWarning)
 import pandas as pd
 import numpy as np
 import requests
