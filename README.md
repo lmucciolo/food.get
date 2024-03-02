@@ -1,6 +1,6 @@
 *This README.md file was generated on 03-02-24 by Livia Mucciolo*
 # food.get
-Examining food access in Chicago post-pandemic.
+The project aims to analyze food access within the Chicago area. We provide an updated food access metric for 2022 to understand Chicago’s post-pandemic food access and show how food access has changed in the city over time.
 
 ## Authors
 - [Austin Steinhart](https://github.com/Asteinhart)
@@ -8,11 +8,7 @@ Examining food access in Chicago post-pandemic.
 - [Livia Mucciolo](https://github.com/lmucciolo)
 - [Stacy George](https://github.com/stacy-george) 
 
-## Introduction
-The project aims to analyze food access and security within the Chicago area. The scope of this work provides an updated food access metric for 2022 to understand communities’ post-pandemic food access and shows how food access has changed in the city over time.
-
 ## Installation
-Note can only be run with 
 
 1. [Install Poetry to Local Machine](https://python-poetry.org/docs/)
 
@@ -25,7 +21,6 @@ git@github.com:uchicago-capp122-spring24/food.get.git
 3. Install Virtual Environment and Dependencies
 
 ```bash
-poetry shell
 poetry install
 ```
 
@@ -59,19 +54,13 @@ Dash is running on http://127.0.0.1:8051/
 Press CTRL+C to quit
 ```
 
-## Overall Notes
-If you encounter issues with Dash or ... please run the following commands within the poetry shell:
-```bash
-python3 -m pip install...
-python3 pip install....
-```
+## Sources
+- [USDA Food Access Research Atlas](https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/)
+- [American Community Survey 5-Year Data (2022)](https://www.census.gov/data/developers/data-sets/acs-5year.html)
+- [City of Chicago Grocery Store Status Map](https://data.cityofchicago.org/Health-Human-Services/Grocery-Store-Status-Map/rish-pa6g)
+- [USDA SNAP Data](https://usda-snap-retailers-usda-fns.hub.arcgis.com/)
 
 ## Acknowledgments
 CAPP 122 Instructor - Professor James Turk
 
 CAPP 122 Project TA - Reza Rizky Pratama
-
-Original USDA Food Access Research Atlas used for data collection and comparison:
-- [Food Access Research Atlas](https://www.ers.usda.gov/data-products/food-access-research-atlas/go-to-the-atlas/)
-
-
