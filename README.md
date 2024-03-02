@@ -1,6 +1,6 @@
 *This README.md file was generated on 03-02-24 by Livia Mucciolo*
 # food.get
-The project aims to analyze food access within the Chicago area. We provide an updated food access metric for 2022 to understand Chicago’s post-pandemic food access and show how food access has changed in the city over time.
+The project aims to analyze food access within the Chicago area. We provide an updated food access metric for 2022 to understand Chicago’s post-pandemic food access and to show how food access has changed in the city over time.
 
 ## Authors
 - [Austin Steinhart](https://github.com/Asteinhart)
@@ -26,7 +26,7 @@ poetry install
 
 ## Usage
 Project **must** be run in the Poetry virtual environment. 
-Upon completion of the above installation requirements and within the project terminal, 
+Upon completion of the above installation requirements within the project terminal, 
 and on each subsequent rendering of the project, initialize the virtual environment by running:
 
 ```bash

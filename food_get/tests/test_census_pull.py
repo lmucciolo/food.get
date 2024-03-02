@@ -1,3 +1,15 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: extract_census.py
+Author: Danielle Rosenthal
+
+Notes:
+    * In the current implementation we only support searching for Illinois counties
+
+Description:
+    This file scrapes the US Census 2022 5-Year Estimate Data Profiles tables.
+"""
 import pytest
 
 from food_get.data.extract_census import get_fips_code, get_county_code, state_income, county_income, tract_level_extract, json_to_df
@@ -66,6 +78,7 @@ def test_no_table_no_variable():
     with pytest.raises(KeyError) as info:
         tract_level_extract(state_fips_code='17', county_code='031')
     assert "No table or variable was provided. Please enter either the name of a table or a list of variables" in str(info.value)
+
 
 def test_one_variable():
     api_response = tract_level_extract(variables=['DP05_0001E'], state_fips_code='17', county_code='031')
