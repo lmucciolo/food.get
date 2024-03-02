@@ -31,7 +31,7 @@ def import_atlas_data(export=False, years=['2010', '2015', '2019']):
     atlas_sets = pd.DataFrame()
 
     for year in years:
-        Atlas_Raw = pd.read_csv(pathlib.Path(__file__).parent / "../data/raw_atlas_data/Atlas{}.csv".format(year))
+        Atlas_Raw = pd.read_csv(pathlib.Path(__file__).parent / "../data/raw_atlas_files/Atlas{}.csv".format(year))
         
         Atlas_Filtered = Atlas_Raw[['CensusTract', 'LowIncomeTracts', 'LATracts_half', 'lapophalfshare', 'lapophalf']]
         Atlas_Filtered = Atlas_Filtered.add_suffix('_{}'.format(year))
