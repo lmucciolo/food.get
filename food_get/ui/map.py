@@ -2,11 +2,6 @@ import folium
 from folium import plugins
 from food_get.analysis.agg_metrics import track_comparison_df
 
-# chart titles "Census Tract Boundaries 2020"
-# Historical Food Atlas Metrics
-# Constructed 2022 Food Atlas Metric
-# All Food Atlas Metrics
-
 
 def create_base_map():
     """
@@ -36,7 +31,7 @@ def create_base_map():
 
 def create_tracks_inclusion(name=None):
     """
-    creates with tracks we are using and dropping as well as shoreline
+    creates map to show which tracks we are using and dropping as well as waterway
     adjustments
     """
     m = create_base_map()
@@ -53,6 +48,9 @@ def create_tracks_inclusion(name=None):
 
 
 def create_historic_map(df, name=None):
+    """
+    Create the map for the 2010 - 2019 Food Atlas metric
+    """
     m = create_base_map()
 
     map_historic_settings(df, m)
@@ -67,6 +65,9 @@ def create_historic_map(df, name=None):
 
 
 def create_2022_map(metrics_df, grocery_df, name=None):
+    """
+    Create the map for the constructed 2022 Food Atlas metric with grocery stores
+    """
     m = create_base_map()
 
     map_2022_settings(metrics_df, grocery_df, m)
@@ -81,6 +82,9 @@ def create_2022_map(metrics_df, grocery_df, name=None):
 
 
 def create_total_map(metrics_df, grocery_df, name=None):
+    """
+    Create the map that includes all labels for the conclusions.
+    """
     m = create_base_map()
 
     map_historic_settings(metrics_df, m)
@@ -98,7 +102,9 @@ def create_total_map(metrics_df, grocery_df, name=None):
 
 def map_tract_inclusion_settings(m):
     """
-    Adds styles and layers for tract inclusion map. Talks a base map object m as input.
+    Adds styles and layers for create_tracks_inclusion(). Takes a base map object that
+    is return from create_base_map() m as input.
+
     No return
     """
     # prep data
@@ -190,7 +196,9 @@ def map_tract_inclusion_settings(m):
 
 def map_2022_settings(metrics_df, grocery_df, m):
     """
-    Adds styles and layers for current metrics map. Talks a base map object m as input.
+    Adds styles and layers for create_2022_map(). Takes a base map object that
+    is return from create_base_map() m as input.
+
     No return
     """
     # styles
@@ -399,10 +407,13 @@ def map_2022_settings(metrics_df, grocery_df, m):
 
 
 def map_historic_settings(df, m):
+    """
+    Adds styles and layers for create_historic_map(). Takes a base map object that
+    is return from create_base_map() m as input.
 
-    colors_2010 = ["#e34a33", "#fdbb84", "#fee8c8"]  # dark  # med  # light
-    colors_2015 = ["#8856a7", "#9ebcda", "#e0ecf4"]  # dark  # med  # light
-    colors_2019 = ["#2ca25f", "#99d8c9", "#e5f5f9"]  # dark  # med  # light
+    No return
+    """
+    colors = ["#e34a33", "#fdbb84", "#fee8c8"]  # dark  # med  # light
 
     def style_function_2010_lowi(feature):
         default_style = {
@@ -413,18 +424,18 @@ def map_historic_settings(df, m):
         }
         if feature["properties"]["lapophalfshare_2010"] is not None:
             if feature["properties"]["lapophalfshare_2010"] <= 1 / 3:
-                default_style["fillColor"] = colors_2010[0]
+                default_style["fillColor"] = colors[0]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2015"] == 1:
                     default_style["fillPattern"] = stripes_lowa
 
             elif feature["properties"]["lapophalfshare_2010"] <= 2 / 3:
-                default_style["fillColor"] = colors_2010[1]
+                default_style["fillColor"] = colors[1]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2015"] == 1:
                     default_style["fillPattern"] = stripes_meda
             else:
-                default_style["fillColor"] = colors_2010[2]
+                default_style["fillColor"] = colors[2]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2015"] == 1:
                     default_style["fillPattern"] = stripes_higha
@@ -442,14 +453,14 @@ def map_historic_settings(df, m):
         }
         if feature["properties"]["lapophalfshare_2010"] is not None:
             if feature["properties"]["lapophalfshare_2010"] <= 1 / 3:
-                default_style["fillColor"] = colors_2010[0]
+                default_style["fillColor"] = colors[0]
                 default_style["fillOpacity"] = 0.7
 
             elif feature["properties"]["lapophalfshare_2010"] <= 2 / 3:
-                default_style["fillColor"] = colors_2010[1]
+                default_style["fillColor"] = colors[1]
                 default_style["fillOpacity"] = 0.7
             else:
-                default_style["fillColor"] = colors_2010[2]
+                default_style["fillColor"] = colors[2]
                 default_style["fillOpacity"] = 0.7
         else:
             default_style["fillPattern"] = circles
@@ -465,18 +476,18 @@ def map_historic_settings(df, m):
         }
         if feature["properties"]["lapophalfshare_2015"] is not None:
             if feature["properties"]["lapophalfshare_2015"] <= 1 / 3:
-                default_style["fillColor"] = colors_2010[0]
+                default_style["fillColor"] = colors[0]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2015"] == 1:
                     default_style["fillPattern"] = stripes_lowa
 
             elif feature["properties"]["lapophalfshare_2015"] <= 2 / 3:
-                default_style["fillColor"] = colors_2010[1]
+                default_style["fillColor"] = colors[1]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2015"] == 1:
                     default_style["fillPattern"] = stripes_meda
             else:
-                default_style["fillColor"] = colors_2010[2]
+                default_style["fillColor"] = colors[2]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2015"] == 1:
                     default_style["fillPattern"] = stripes_higha
@@ -494,14 +505,14 @@ def map_historic_settings(df, m):
         }
         if feature["properties"]["lapophalfshare_2015"] is not None:
             if feature["properties"]["lapophalfshare_2015"] <= 1 / 3:
-                default_style["fillColor"] = colors_2010[0]
+                default_style["fillColor"] = colors[0]
                 default_style["fillOpacity"] = 0.7
 
             elif feature["properties"]["lapophalfshare_2015"] <= 2 / 3:
-                default_style["fillColor"] = colors_2010[1]
+                default_style["fillColor"] = colors[1]
                 default_style["fillOpacity"] = 0.7
             else:
-                default_style["fillColor"] = colors_2010[2]
+                default_style["fillColor"] = colors[2]
                 default_style["fillOpacity"] = 0.7
         else:
             default_style["fillPattern"] = circles
@@ -517,17 +528,17 @@ def map_historic_settings(df, m):
         }
         if feature["properties"]["lapophalfshare_2019"] is not None:
             if feature["properties"]["lapophalfshare_2019"] <= 1 / 3:
-                default_style["fillColor"] = colors_2010[0]
+                default_style["fillColor"] = colors[0]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2019"] == 1:
                     default_style["fillPattern"] = stripes_lowa
             elif feature["properties"]["lapophalfshare_2019"] <= 2 / 3:
-                default_style["fillColor"] = colors_2010[1]
+                default_style["fillColor"] = colors[1]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2019"] == 1:
                     default_style["fillPattern"] = stripes_meda
             else:
-                default_style["fillColor"] = colors_2010[2]
+                default_style["fillColor"] = colors[2]
                 default_style["fillOpacity"] = 0.7
                 if feature["properties"]["LowIncomeTracts_2019"] == 1:
                     default_style["fillPattern"] = stripes_higha
@@ -545,13 +556,13 @@ def map_historic_settings(df, m):
         }
         if feature["properties"]["lapophalfshare_2019"] is not None:
             if feature["properties"]["lapophalfshare_2019"] <= 1 / 3:
-                default_style["fillColor"] = colors_2010[0]
+                default_style["fillColor"] = colors[0]
                 default_style["fillOpacity"] = 0.7
             elif feature["properties"]["lapophalfshare_2019"] <= 2 / 3:
-                default_style["fillColor"] = colors_2010[1]
+                default_style["fillColor"] = colors[1]
                 default_style["fillOpacity"] = 0.7
             else:
-                default_style["fillColor"] = colors_2010[2]
+                default_style["fillColor"] = colors[2]
                 default_style["fillOpacity"] = 0.7
         else:
             default_style["fillPattern"] = circles
@@ -559,13 +570,13 @@ def map_historic_settings(df, m):
         return default_style
 
     stripes_lowa = folium.plugins.pattern.StripePattern(
-        angle=-45, opacity=1, color=colors_2010[0]
+        angle=-45, opacity=1, color=colors[0]
     ).add_to(m)
     stripes_meda = folium.plugins.pattern.StripePattern(
-        angle=-45, opacity=1, color=colors_2010[1]
+        angle=-45, opacity=1, color=colors[1]
     ).add_to(m)
     stripes_higha = folium.plugins.pattern.StripePattern(
-        angle=-45, opacity=1, color=colors_2010[2]
+        angle=-45, opacity=1, color=colors[2]
     ).add_to(m)
 
     circles = folium.plugins.pattern.CirclePattern(

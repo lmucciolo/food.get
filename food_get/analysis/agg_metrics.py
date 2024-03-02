@@ -1,4 +1,16 @@
-import pandas as pd
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: agg_metrics.py
+Authors: Austin Steinhart
+Note: 
+    * Austin created all functions below.
+
+Description:
+    This file generates DataFrames of the combined metrics and grocery stores 
+    for use in the map.
+"""
+
 import geopandas as gpd
 import numpy as np
 import pathlib

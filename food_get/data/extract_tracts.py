@@ -1,3 +1,13 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: extract_tracts.py
+Authors: Austin Steinhart
+
+Description:
+    This file imports all the raw data from their source
+"""
+
 import requests
 import io
 import pandas as pd
@@ -6,13 +16,6 @@ import geopandas as gpd
 import pathlib
 
 
-# Step 1: Get 2010 chi census tracks into a pandas dataFrame \
-# Step 2: Get 2020 chi census tracks into a pandas dataFrame \
-# Step 3: Determine relationship between 2010 and 2020. \
-# Step 4: Limit to just census tracks in 2020 and 2010 that have a one to one relationship
-
-
-# step 1
 def extract_chi_census_tracts_2010():
     """
     Takes in census track data (geojson) and returns shorted pandas df
@@ -29,7 +32,6 @@ def extract_chi_census_tracts_2010():
     return final_df
 
 
-# step 2
 def extract_chi_census_tracts_2020():
     """
     Takes in census track data and returns shorted table to filter by
@@ -43,17 +45,6 @@ def extract_chi_census_tracts_2020():
     )
 
     return final_df
-
-
-# all census tracts for chicago from 2010
-# chi_census_tracts_2010 = extract_chi_census_tracts_2010()
-
-# all census tracts for chicago from 2020
-# chi_census_tracts_2020 = extract_chi_census_tracts_2020()
-
-
-# step 3 / 4
-# https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.2020.html#tract
 
 
 def census_tracts_2020_2010_relationships():
@@ -93,11 +84,13 @@ def full_chi_10_20_tracts_one_mapping():
     (geoid10) and the boundaries for the tract (geometry).
     Note: includes full census track. should then apply restrict_tract_to_shore()
     for metric calculation.
+    Step 1: Get 2010 chi census tracks into a pandas dataFrame
+    Step 2: Determine relationship between 2010 and 2020.
+    Step 3: Limit to just census tracks in 2020 and 2010 that have a one to one relationship
     """
 
     tracts_2010 = extract_chi_census_tracts_2010()
     tracts_2010 = tracts_2010[["geoid10", "geometry"]]
-    tracts_2020 = extract_chi_census_tracts_2020()
 
     tract_relationships = census_tracts_2020_2010_relationships()
     # only 1:1 tracts in 2020
@@ -105,7 +98,7 @@ def full_chi_10_20_tracts_one_mapping():
         tract_relationships["relation"] == "one"
     ]
 
-    # add on geometries to file, preference 2020 geo (2010 for now)
+    # add on geometries to file from 2010 tracts
     final_df = tract_relationships_1_1.merge(
         tracts_2010, how="left", left_on="GEOID_TRACT_10", right_on="geoid10"
     )

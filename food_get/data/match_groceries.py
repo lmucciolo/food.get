@@ -1,3 +1,13 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: match_groceries.py
+Authors: Austin Steinhart
+
+Description:
+    This matches the Chicago grocery stores to the SNAP database
+"""
+
 import pandas as pd
 from math import asin, sqrt, cos, sin, radians
 import numpy as np
@@ -8,8 +18,7 @@ EARTH_R_MI = 3963
 def haversine_distance(lat1, lon1, lat2, lon2):
     """
     Calculate the distance between two points on a sphere (like Earth) in miles.
-
-    https://en.wikipedia.org/wiki/Haversine_formula
+    Used code from CAPP 122 PA3
 
     :param lat1: latitude of first point
     :param lon1: longitude of first point
@@ -55,7 +64,7 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
 
     for index1, store1 in stores1_df.iterrows():
         for index2, store2 in stores2_df.iterrows():
-            # check that not already matched matched and numbers match?
+            # check that not already matched matched and numbers match
             if (
                 stores1_df.loc[index1, "match_id"] is None
                 and store1["address_num"] == store2["address_num"]
@@ -104,10 +113,3 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
     merged_df["address"] = merged_df["address"].str.title()
 
     return merged_df
-
-
-# QA
-# print(f"Total in original: {len(g_clean) + len(s_clean)}")
-# print(f"Total merged: {len(df[df['match_id'].notna()])}")
-# print(f"Total in merge: {len(df)}")
-# print(f"Total in OG minus merged: {len(g_clean) + len(s_clean) - len(df[df['match_id'].notna()])} :)")
