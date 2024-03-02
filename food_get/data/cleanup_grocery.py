@@ -19,11 +19,12 @@ from food_get.data.match_groceries import match_grocery_stores
 
 
 GROCERY_RAW = pd.read_csv(
-    pathlib.Path(__file__).parent / "../data/raw_data/Grocery_Store_Status_20240219.csv"
+    pathlib.Path(__file__).parent
+    / "../data/import_data/Grocery_Store_Status_20240219.csv"
 )
-pathlib.Path(__file__).parent / "../data/raw_data/snap_retailers_data.csv"
+pathlib.Path(__file__).parent / "../data/import_data/snap_retailers_data.csv"
 SNAP_RAW = pd.read_csv(
-    pathlib.Path(__file__).parent / "../data/raw_data/snap_retailers_data.csv"
+    pathlib.Path(__file__).parent / "../data/import_data/snap_retailers_data.csv"
 )
 MEMBERSHIP_STORES = ["Costco", "Sam's Club", "BJ's Wholesale Club"]
 

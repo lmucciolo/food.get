@@ -109,7 +109,7 @@ def track_comparison_df():
     geojson_data = gpd.GeoDataFrame(tracts_2010_key())
     lake = gpd.read_file(
         pathlib.Path(__file__).parent
-        / "../data/raw_data/Lake_Michigan_Shoreline.geojson"
+        / "../data/import_data/Lake_Michigan_Shoreline.geojson"
     )
 
     tracts_keep = geojson_data[geojson_data["relation"] == "one"]

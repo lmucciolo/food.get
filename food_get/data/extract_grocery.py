@@ -97,7 +97,7 @@ def import_snap_retailers_data():
         stored_snap_retailer_df = pd.DataFrame(stored_snap_retailer_data)
 
         stored_snap_retailer_df.to_csv(
-            "data/raw_data/snap_retailers_data.csv", index=False
+            "data/import_data/snap_retailers_data.csv", index=False
         )
 
 
@@ -108,6 +108,6 @@ def import_grocery_store_data():
     Returns:
         A pandas dataframe of Chicago grocery detail's features.
     """
-    grocery_store_df = pd.read_csv("data/raw_data/Grocery_Store_Status_20240219.csv")
+    grocery_store_df = pd.read_csv("data/import_data/Grocery_Store_Status_20240219.csv")
 
     return grocery_store_df

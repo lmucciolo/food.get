@@ -10,8 +10,10 @@ Notes:
 Description:
     This file scrapes the US Census 2022 5-Year Estimate Data Profiles tables.
 """
+
 import warnings
-warnings.simplefilter(actions='ignore', category=FutureWarning)
+
+warnings.simplefilter(actions="ignore", category=FutureWarning)
 import requests
 import pandas as pd
 import pathlib
@@ -19,10 +21,13 @@ from lxml import html
 import json
 
 illinois_counties = pd.read_csv(
-    pathlib.Path(__file__).parent / "../data/illinois_counties_guide.csv"
+    pathlib.Path(__file__).parent / "../data/import_data/illinois_counties_guide.csv"
 )
-with open(pathlib.Path(__file__).parent / "../data/state_fips.json") as json_file:
+with open(
+    pathlib.Path(__file__).parent / "../data/import_data/state_fips.json"
+) as json_file:
     state_name_fips_dict = json.load(json_file)
+
 
 def json_to_df(response):
     """
@@ -201,9 +206,9 @@ def get_county_code(county):
         county_code = county_info["COUNTYFP"][0]
         county_code = str(county_code)
         if len(county_code) == 1:
-            county_code = "00"+county_code
+            county_code = "00" + county_code
         elif len(county_code) == 2:
-            county_code = "0"+county_code
+            county_code = "0" + county_code
     else:
         raise KeyError("You have not entered a correct Illinois county name")
 

@@ -163,7 +163,7 @@ def identify_low_income(tracts_with_access_label):
     """
     # pull in census 2022 income data for the tract level
     income_census = pd.read_csv(
-        pathlib.Path(__file__).parent / "../data/census_2022.csv"
+        pathlib.Path(__file__).parent / "../data/import_data/census_2022.csv"
     )
 
     # create variable for tract id

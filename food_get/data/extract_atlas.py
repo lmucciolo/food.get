@@ -9,8 +9,7 @@ Description:
     and combines them into one dataframe based on what is required for the map
     visualization.
 """
-import warnings
-warnings.simplefilter(actions='ignore', category=FutureWarning)
+
 import pandas as pd
 import numpy as np
 import requests
@@ -35,7 +34,7 @@ def import_atlas_data(export=False, years=["2010", "2015", "2019"]):
     for year in years:
         Atlas_Raw = pd.read_csv(
             pathlib.Path(__file__).parent
-            / "../data/raw_atlas_files/Atlas{}.csv".format(year)
+            / "../data/import_data/Atlas{}.csv".format(year)
         )
 
         Atlas_Filtered = Atlas_Raw[
@@ -96,7 +95,7 @@ def filtered_atlas(export=False, years=["2010", "2015", "2019"]):
     filtered_df["LATracts_half_2019"] = filtered_df["LATracts_half_2019"].values.astype(
         np.int64
     )
-    filtered_df['lapophalfshare_2019'] = filtered_df['lapophalfshare_2019'].fillna(0)
+    filtered_df["lapophalfshare_2019"] = filtered_df["lapophalfshare_2019"].fillna(0)
     filtered_df["lapophalfshare_2019"] = filtered_df["lapophalfshare_2019"] / 100
 
     for year in years:
