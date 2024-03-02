@@ -1,7 +1,7 @@
 """
 Project: Analyzing food access and security in Chicago
 Team: food.get
-File Name: data_extract.py
+File Name: extract_grocery.py
 Authors: Danielle Rosenthal and Stacy George
 Note: 
     * Stacy created import_business_liscense_data and import_snap_retailers_data
@@ -9,13 +9,15 @@ Note:
 Description:
     This file imports all the raw data from their source
 """
+
 import pandas as pd
 import requests
 import json
 import time
 from urllib.parse import urlencode
 
-def make_api_request(url, params = None):
+
+def make_api_request(url, params=None):
     """
     Make an API request and parse the JSON response.
 
@@ -33,7 +35,7 @@ def make_api_request(url, params = None):
 
 def import_snap_retailers_data():
     """
-    This function loads the data from the USDA Food and Nutrition Service portal on the 
+    This function loads the data from the USDA Food and Nutrition Service portal on the
     location for currently authorized SNAP retailers.
 
     Returns:
@@ -43,37 +45,41 @@ def import_snap_retailers_data():
 
     # parameters for ObjectID retrieval
     params_object_ids = {
-        'where': "City = 'CHICAGO'",
-        'outFields': '*',
-        'returnIdsOnly': True,
-        'outSR': 4326,
-        'f': 'json'
-        }
+        "where": "City = 'CHICAGO'",
+        "outFields": "*",
+        "returnIdsOnly": True,
+        "outSR": 4326,
+        "f": "json",
+    }
 
     # Parameters for detailed information retrieval
-    params_features = {
-        'outFields': '*',
-        'outSR': 4326,
-        'f': 'json'
-        }
-    
+    params_features = {"outFields": "*", "outSR": 4326, "f": "json"}
+
     # retrieve ObjectIDs for Chicago SNAP groceries
     url_object_ids = base_url + urlencode(params_object_ids)
     response_object_ids = make_api_request(url_object_ids)
-    object_id_lst = response_object_ids.get('objectIds', []) if response_object_ids else []
+    object_id_lst = (
+        response_object_ids.get("objectIds", []) if response_object_ids else []
+    )
 
     snap_retailer_data_lst = []
     batch_size = 10
 
     # iterate over Chicago SNAP ObjectIDs in batches
     for i in range(0, len(object_id_lst), batch_size):
-        batch_object_ids = object_id_lst[i:i + batch_size]
+        batch_object_ids = object_id_lst[i : i + batch_size]
         # construct URL for batch request
-        url_detail_batch = base_url + urlencode(params_features) + "&where=ObjectId IN (" + ",".join(map(str, batch_object_ids)) + ")"
+        url_detail_batch = (
+            base_url
+            + urlencode(params_features)
+            + "&where=ObjectId IN ("
+            + ",".join(map(str, batch_object_ids))
+            + ")"
+        )
         # get snap retailer data for the batch
         response_detail_batch = make_api_request(url_detail_batch)
         # append snap retailer data to the list
-        snap_retailer_data_lst.extend(response_detail_batch['features'])
+        snap_retailer_data_lst.extend(response_detail_batch["features"])
         # time delay between batches
         time.sleep(0.1)
 
@@ -82,7 +88,7 @@ def import_snap_retailers_data():
 
         for retailer_entry in snap_retailer_data_lst:
             # Access the 'attributes' key within each entry
-            attributes = retailer_entry.get('attributes', {})
+            attributes = retailer_entry.get("attributes", {})
 
             # Append the attributes dictionary to the result list
             stored_snap_retailer_data.append(attributes)
@@ -90,7 +96,10 @@ def import_snap_retailers_data():
         # Convert the list of dictionaries to a Pandas DataFrame
         stored_snap_retailer_df = pd.DataFrame(stored_snap_retailer_data)
 
-        stored_snap_retailer_df.to_csv('data/raw_data/snap_retailers_data.csv', index=False)
+        stored_snap_retailer_df.to_csv(
+            "data/raw_data/snap_retailers_data.csv", index=False
+        )
+
 
 def import_grocery_store_data():
     """
@@ -99,6 +108,6 @@ def import_grocery_store_data():
     Returns:
         A pandas dataframe of Chicago grocery detail's features.
     """
-    grocery_store_df = pd.read_csv('data/raw_data/Grocery_Store_Status_20240219.csv')
+    grocery_store_df = pd.read_csv("data/raw_data/Grocery_Store_Status_20240219.csv")
 
     return grocery_store_df

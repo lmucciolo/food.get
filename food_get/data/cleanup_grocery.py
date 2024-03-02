@@ -1,7 +1,7 @@
 """
 Project: Analyzing food access and security in Chicago
 Team: food.get
-File Name: cleanup.py
+File Name: cleanup_grocery
 Authors: Stacy George
 Note: 
     * Stacy created clean_business_license and clean_snap_retailer_data
@@ -9,6 +9,9 @@ Note:
 Description:
     This file cleans all the raw data
 """
+
+# cleanup_sg
+# cleanup_grocery
 
 import pandas as pd
 import pathlib

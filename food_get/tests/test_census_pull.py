@@ -1,6 +1,6 @@
 import pytest
 
-from food_get.data.census_data_pull import get_fips_code, get_county_code, state_income, county_income, tract_level_extract
+from food_get.data.extract_census import get_fips_code, get_county_code, state_income, county_income, tract_level_extract
 
 
 @pytest.mark.parametrize("state,state_code", [
