@@ -184,12 +184,12 @@ def generate_layout(table_width):
                                         "The project aims to analyze food access and security within the Chicago area. The scope of this work shows how food access has changed in the city over time and provides an updated food access metric for 2022 to understand communities’ post-pandemic food access.",
                                         style={"padding": "0.25in"},
                                     ),
-                                    html.Br(style={"height": "5px"}),
+                                    html.Br(),
                                     html.P(
                                         "The map to the right depicts the census tracts that compose Chicago. Notably, census tracts extend into the shoreline. For the recreation of the post-pandemic food access metric, the shoreline has been removed. Additionally, the 2020 census redefined tract lines from the 2010 census. Any tracts that changed between 2010 and 2020 (either they were divided into other tracts or incorporated into another tract) are excluded from our analysis.",
                                         style={"padding": "0.25in"},
                                     ),
-                                    html.Br(style={"height": "5px"}),
+                                    html.Br(),
                                     html.P(
                                         "Map Interaction: Viewers can toggle between options to see the shoreline changes, where water is in relation to the city, and which census tracts have been dropped.",
                                         style={"padding": "0.25in"},
