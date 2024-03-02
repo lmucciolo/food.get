@@ -124,7 +124,6 @@ def generate_layout(table_width):
                                 href="/container1",
                                 style={
                                     "color": colors()["g1_color"],
-                                    "margin-right": "10px",
                                 },
                             ),
                             " | ",
@@ -147,7 +146,7 @@ def generate_layout(table_width):
                             ),
                             " | ",
                             dcc.Link(
-                                "Footnotes",
+                                "Considerations",
                                 href="/container5",
                                 style={"color": colors()["g1_color"]},
                             ),
@@ -203,7 +202,14 @@ def generate_layout(table_width):
                                 },
                             ),
                             html.Div(
-                                [
+                                [     
+                                html.H3(
+                                "Census Tract Boundaries 2020",
+                                style={
+                                    "margin-bottom": "0.8em",
+                                    "margin-left": "0.25in",
+                                },
+                                        ),
                                     html.Iframe(
                                         srcDoc=open("tract_map.html", "r").read(),
                                         width="100%",
@@ -260,7 +266,15 @@ def generate_layout(table_width):
                                 },
                             ),
                             html.Div(
+                                
                                 [
+                                html.H3(
+                                "Historical Food Atlas Metrics",
+                                style={
+                                    "margin-bottom": "0.8em",
+                                    "margin-left": "0.25in",
+                                },
+                                        ),
                                     html.Iframe(
                                         srcDoc=open("historic_map.html", "r").read(),
                                         width="100%",
@@ -304,7 +318,7 @@ def generate_layout(table_width):
                                         "This map shows our project’s constructed metric that mimics the Food Atlas framing for access proportion by census tract including the lens of low-income.",
                                         style={"padding": "0.25in"},
                                     ),
-                                                                        html.Br(),
+                                    html.Br(),
                                     html.P(
                                         "Map interaction: Viewers can see the state of the city post-pandemic by interacting with the map to see access proportion and layer on low-income, or see the overall change in food access pre- to post-Covid-19 pandemic. The grocery stores toggle includes grocery store locations used to calculate the access metric. Note, that the grocery store circles are not to scale. For the 2022 Access Proportion and 2022 Access Proportion with low-income options, the darker the tract, the worse the access. Stripped tracts indicate low-income. For the change in the food access map, orange indicates a decrease in access, grey remains the same, and blue marks an improvement in access.",
                                         style={"padding": "0.25in"},
@@ -319,6 +333,13 @@ def generate_layout(table_width):
                             ),
                             html.Div(
                                 [
+                                html.H3(
+                                "Constructed 2022 Food Atlas Metric",
+                                style={
+                                    "margin-bottom": "0.8em",
+                                    "margin-left": "0.25in",
+                                },
+                                        ),
                                     html.Iframe(
                                         srcDoc=open("2022_map.html", "r").read(),
                                         width="100%",
@@ -377,6 +398,13 @@ def generate_layout(table_width):
                             ),
                             html.Div(
                                 [
+                                html.H3(
+                                "All Food Atlas Metrics",
+                                style={
+                                    "margin-bottom": "0.8em",
+                                    "margin-left": "0.25in",
+                                },
+                                        ),
                                     html.Iframe(
                                         srcDoc=open("total_map.html", "r").read(),
                                         width="100%",
@@ -403,7 +431,7 @@ def generate_layout(table_width):
                     html.Div(
                         [
                             html.H3(
-                                "Project Design Choices",
+                                "Considerations",
                                 style={
                                     "margin-bottom": "0.8em",
                                     "margin-left": "0.25in",
@@ -411,23 +439,35 @@ def generate_layout(table_width):
                             ),
                             html.Ul([
                                 html.Li([
-                                    html.Strong("Years"),
+                                    html.Strong("Years",
+                                                style={"padding": "0.25in"},),
                                     html.Ul([
-                                        html.Li("For the recreated post-pandemic metric, ACS 5-year (2018-2022) census data was used."),
-                                        html.Li("For ease of data collection and alignment with the Chicago data portal, grocery store data is from 2020. We assume that the number of grocery stores does not shift during two years.")
+                                        html.Li("For the recreated post-pandemic metric, ACS 5-year (2018-2022) census data was used.",
+                                                style={"padding": "0.25in"},
+                                                ),
+                                        html.Li("For ease of data collection and alignment with the Chicago data portal, grocery store data is from 2020. We assume that the number of grocery stores does not shift during two years.",
+                                        style={"padding": "0.25in"},
+                                        )
                                     ])
                                 ]),
                                 html.Li([
-                                    html.Strong("Chicago geography"),
+                                    html.Strong("Chicago geography",
+                                                style={"padding": "0.25in"},),
                                     html.Ul([
-                                        html.Li("For metric calculations, we exclude the area of census tracks that is in the lake or river. Folium map provides viewers with the option to toggle between the original census tracts with the waterways or without."),
-                                        html.Li("The project only determines metrics for census tracts that stayed the same from 2010 to 2020.")
+                                        html.Li("For metric calculations, we exclude the area of census tracks that is in the lake or river. Folium map provides viewers with the option to toggle between the original census tracts with the waterways or without.",
+                                                style={"padding": "0.25in"},),
+                                        html.Li("The project only determines metrics for census tracts that stayed the same from 2010 to 2020.",
+                                                style={"padding": "0.25in"},
+                                                )
                                     ])
                                 ]),
                                 html.Li([
-                                    html.Strong("Grocery store matching"),
+                                    html.Strong("Grocery store matching",
+                                                style={"padding": "0.25in"},
+                                                ),
                                     html.Ul([
-                                        html.Li("Constrained matching process of grocery stores to SNAP providers to within 1000 feet of each other and with shared address numbers.")
+                                        html.Li("Constrained matching process of grocery stores to SNAP providers to within 1000 feet of each other and with shared address numbers.",
+                                                style={"padding": "0.25in"},)
                                     ])
                                 ]),
                             ]),
@@ -461,7 +501,9 @@ def generate_layout(table_width):
                                     "padding-right": "0.25in",
                                     "width": "5.5in",
                                 },
-                                style_cell={"textAlign": "center"},
+                                style_cell={'font-family': 'Helvetica, sans-serif',
+                                'textAlign': 'center'
+                                },
                             ),
                         ],
                         style={"width": "50%", "float": "left"},
