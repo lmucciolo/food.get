@@ -83,7 +83,6 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
         "store_name_y",
         "address_num_x",
         "address_num_y",
-        "address_x",
         "latitude_y",
         "longitude_y",
         "address_y",
@@ -94,12 +93,14 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
     merged_df.rename(
         {
             "store_name_x": "store_name",
+            "address_x": "address",
             "latitude_x": "latitude",
             "longitude_x": "longitude",
         },
         axis=1,
         inplace=True,
     )
+    merged_df["address"] = merged_df["address"].str.title()
 
     return merged_df
 
