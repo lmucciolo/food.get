@@ -14,23 +14,22 @@ def tracts_metrics_df():
     """
     Create the complete data frames used for the maps with metrics and boundaries
     """
-    # tract boundaries dataframe 
+    # tract boundaries dataframe
     all_tracts = full_chi_10_20_tracts_one_mapping()
     all_tracts["GEOID_TRACT_20"] = all_tracts["GEOID_TRACT_20"].astype(int)
 
-    # historic atlas data
-    atlas_hist = pd.read_csv(
-        pathlib.Path(__file__).parent / "../data/filtered_atlas_update.csv"
-    )
-    
-    # atlas_hist = filtered_atlas()
+    atlas_hist = filtered_atlas()
 
     # 2022 created metric
     stores = create_buffers()
     metric_2022 = find_intersections(stores)
 
     metric_2022 = metric_2022.rename(
-        columns={"ratio": "lapophalfshare_2022", "low_access": "LATracts_half_2022"}
+        columns={
+            "ratio": "lapophalfshare_2022",
+            "low_access": "LATracts_half_2022",
+            "low_income": "LowIncomeTracts_2022",
+        }
     )
     metric_2022["tract_id"] = metric_2022["tract_id"].astype(int)
 
@@ -107,7 +106,3 @@ def grocery_stores_df():
     groc_gdf = groc_gdf[groc_gdf["longitude"].notna()]
 
     return groc_gdf
-
-
-# create proportions (times by 100)
-# fix zeros on 2019
