@@ -12,19 +12,25 @@ Description:
 """
 import pandas as pd
 import numpy as np
+import requests
 
+from census_data_pull import census_tract_metrics
+#from data_extract_sg import import_grocery_store_data, import_snap_retailers_data
+from cleanup_sg import clean_grocery_stores, clean_snap_retailer_data
 
-def import_atlas_data(year):
-    Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/{}Atlas.csv'.format(year))
-    Atlas_Filtered = Atlas_Raw[relevant_columns]
-    Atlas_Filtered['YearLabel'] = year
+# Importing the census data at the tract level
+census_data_2022 = census_tract_metrics()
 
-    Atlas_Sets = pd.concat([Atlas_Sets, Atlas_Filtered])
+# Bringing in clean grocery store data
+grocery_data = clean_grocery_stores()
+
+# Bringing in SNAP retailers data
+snap_retailers = clean_snap_retailer_data()
 
 # Stacy additions 2/4/24
-import requests
 import json
 
+# I DON'T THINK WE STILL NEED THIS BUT AM AGRAID TO REMOVE
 def import_business_liscense_data():
     """
     This function loads the data from the Chicago data portal on business liscenses
@@ -40,6 +46,7 @@ def import_business_liscense_data():
 
     return business_liscense_data
 
+# I DON'T THINK WE STILL NEED THIS BUT AM AFRAID TO REMOVE
 def import_snap_retailers_data():
     """
     This function loads the data from the USDA Food and Nutrition Service portal on the 
@@ -55,17 +62,12 @@ def import_snap_retailers_data():
 
     return snap_retailer_data
 
-import requests
-import time
-
-Atlas_Sets = pd.DataFrame()
-
 def import_atlas_data(export=False):
     years = ['2010', '2015', '2019']
     atlas_sets = pd.DataFrame()
 
     for year in years:
-        Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
+        Atlas_Raw = pd.read_csv('raw_atlas_data/Atlas{}.csv'.format(year))
         if year == '2010':
             Atlas_Raw = Atlas_Raw[Atlas_Raw['State']=="IL"]
         else:
@@ -84,11 +86,6 @@ def import_atlas_data(export=False):
         atlas_sets.to_csv('atlas_historical.csv')
 
     return atlas_sets
-
-def one_year(year=None):
-    Atlas_Raw = pd.read_csv('/Users/daniellerosenthal/Downloads/AtlasData/Atlas{}.csv'.format(year))
-    Atlas_Raw = Atlas_Raw[Atlas_Raw['State'] == "Illinois"]
-    return Atlas_Raw
 
 def percentage_string_label(value):
     return f"{value * 100:.1f}%"

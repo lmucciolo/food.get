@@ -13,7 +13,7 @@ def tracts_metrics_df():
     """
     Create the complete data frames used for the maps with metrics and boundaries
     """
-    # tract boundaries
+    # tract boundaries dataframe 
     all_tracts = full_chi_10_20_tracts_one_mapping()
     all_tracts["GEOID_TRACT_20"] = all_tracts["GEOID_TRACT_20"].astype(int)
 
@@ -21,6 +21,7 @@ def tracts_metrics_df():
     atlas_hist = pd.read_csv(
         "/Users/stacygeorge/Documents/capp30122/food.get/food_get/data/filtered_atlas_update.csv"
     )
+    
     # atlas_hist = filtered_atlas()
 
     # 2022 created metric

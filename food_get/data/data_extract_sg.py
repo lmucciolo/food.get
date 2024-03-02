@@ -92,7 +92,6 @@ def import_snap_retailers_data():
 
         stored_snap_retailer_df.to_csv('data/raw_data/snap_retailers_data.csv', index=False)
 
-
 def import_grocery_store_data():
     """
     This function loads the data from a Chicago data portal csv of Grocery stores from 2020.
