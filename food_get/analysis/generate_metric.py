@@ -134,12 +134,14 @@ def identify_low_access(ratios_df):
             boundaries, as well as access ratios
 
     Returns:
-        A GeoDataFrame of 2020 Census tracts with a low_access indiciator column
+        A GeoDataFrame of 2020 Census tracts with a low_access indicator column
 
     """
     ratios_df["low_access"] = ratios_df.apply(
         lambda x: 1 if x["ratio"] < 1 / 3 else 0, axis=1
     )
+    ratios_df["2022_prop_label"] = (ratios_df["ratio"] * 100).round(1)
+    ratios_df["2022_prop_label"] = ratios_df["2022_prop_label"].astype(str) + "%"
 
     return ratios_df
 

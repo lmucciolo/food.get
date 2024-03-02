@@ -135,7 +135,7 @@ def generate_layout(table_width):
                             ),
                             " | ",
                             dcc.Link(
-                                "Recreated Metric",
+                                "Constructed Metric",
                                 href="/container3",
                                 style={"color": colors()["g1_color"]},
                             ),
@@ -289,7 +289,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.H3(
-                                        "Recreated Metric",
+                                        "Constructed Metric",
                                         style={
                                             "margin-bottom": "0.5em",
                                             "margin-left": "0.25in",
@@ -301,7 +301,7 @@ def generate_layout(table_width):
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "This map shows our project’s recreated metric that mimics the Food Atlas framing for access proportion by census tract including the lens of low-income.",
+                                        "This map shows our project’s constructed metric that mimics the Food Atlas framing for access proportion by census tract including the lens of low-income.",
                                         style={"padding": "0.25in"},
                                     ),
                                                                         html.Br(),
