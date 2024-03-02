@@ -55,7 +55,11 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
 
     for index1, store1 in stores1_df.iterrows():
         for index2, store2 in stores2_df.iterrows():
-            if stores1_df.loc[index1, "match_id"] is None:
+            # check that not already matched matched and numbers match?
+            if (
+                stores1_df.loc[index1, "match_id"] is None
+                and store1["address_num"] == store2["address_num"]
+            ):
                 dist = haversine_distance(
                     float(store1["latitude"]),
                     float(store1["longitude"]),
@@ -63,10 +67,7 @@ def match_grocery_stores(stores1_df, stores2_df, max_dist=1000):
                     float(store2["longitude"]),
                 )
                 # dist is how many feet away
-                if (
-                    dist * 5280 <= max_dist
-                    and store1["address_num"] == store2["address_num"]
-                ):
+                if dist * 5280 <= max_dist:
                     stores1_df.loc[index1, "match_id"] = match_id
                     stores2_df.loc[index2, "match_id"] = match_id
                     match_id += 1
