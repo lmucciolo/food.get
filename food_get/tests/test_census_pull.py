@@ -1,6 +1,6 @@
 import pytest
 
-from food_get.data.extract_census import get_fips_code, get_county_code, state_income, county_income, tract_level_extract
+from food_get.data.extract_census import get_fips_code, get_county_code, state_income, county_income, tract_level_extract, json_to_df
 
 
 @pytest.mark.parametrize("state,state_code", [
@@ -16,7 +16,8 @@ def test_state_code_retreival(state, state_code):
 def test_state_code_retreival_invalid_state():
     with pytest.raises(KeyError) as info:  
         get_fips_code("Narnia")  
-    assert str(info.value) == "Please enter a valid US state name"
+    assert 'Please enter a valid US state name' in str(info.value)
+
 
 @pytest.mark.parametrize("county,county_code", [
     ('Cook', '031'),
@@ -30,26 +31,24 @@ def test_county_code_retreival(county, county_code):
 def test_county_code_retreival_invalid():
     with pytest.raises(KeyError) as info:
         get_county_code("Antartica")
-    assert str(info.value) == "You have not entered a correct Illinois county name"
+    assert "You have not entered a correct Illinois county name" in str(info.value)
 
-
+# Tests for state income
 @pytest.mark.parametrize("export,state,expected_len, expected_median, expeected_mean", [
     (False, 'Illinois', 1, '78433', '108873'),
     (False, "New Hampshire", 1, '90845', '118118')
 ])
 
-# Tests for state income
 def test_state_income(export, state, expected_len, expected_median, expeected_mean):
     income_df = state_income(export=export, state=state)
     assert len(income_df) == expected_len
     assert income_df['median_household_income'][0] == expected_median
     assert income_df['mean_household_income'][0] == expeected_mean
 
-
 # Tests for county income
 @pytest.mark.parametrize("export,county,expected_len, expected_median, expeected_mean", [
-    (False, "Cook County", 1, 100, 100),
-    (False, "Woodford", 1, 100, 100)
+    (False, "Cook County", 1, '78304', '113411'),
+    (False, "Woodford", 1, '80093', '103919')
 ])
 
 def test_county_income(export, county, expected_len, expected_median, expeected_mean):
@@ -62,26 +61,15 @@ def test_county_income(export, county, expected_len, expected_median, expeected_
 def test_invalid_table():
     with pytest.raises(KeyError) as info:
         tract_level_extract(table='B01001', state_fips_code='17', county_code='031')
-    assert str(info.value) == "You seem to have specified a table outside of the ACS data profiles database!"
-
+    assert "You seem to have specified a table outside of the ACS data profiles database!" in str(info.value)
 def test_no_table_no_variable():
     with pytest.raises(KeyError) as info:
         tract_level_extract(state_fips_code='17', county_code='031')
-    assert str(info.value) == "No table or variable was provided. Please enter either the name of a table or a list of variables"
-
-
-@pytest.mark.parametrize("state_code,county_code, expected_length, test_metric_label, test_metric_value", [
-    (False, "Cook County", 1, 100, 100),
-    (False, "Woodford", 1, 100, 100)
-])
-
-
+    assert "No table or variable was provided. Please enter either the name of a table or a list of variables" in str(info.value)
 
 def test_one_variable():
-    return None
-
-def test_list_of_variables():
-
-
-def 
-
+    api_response = tract_level_extract(variables=['DP05_0001E'], state_fips_code='17', county_code='031')
+    api_response_df = json_to_df(api_response)
+    assert len(api_response_df) == 1332
+    one_tract = api_response_df[api_response_df['tract']=='010100']
+    assert one_tract['DP05_0001E'].iloc[0] == '4284'
