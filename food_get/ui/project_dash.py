@@ -309,7 +309,7 @@ def generate_layout(table_width):
                             html.Div(
                                 [
                                     html.Iframe(
-                                        srcDoc=open("tract_map.html", "r").read(),
+                                        srcDoc=open("2022_map.html", "r").read(),
                                         width="100%",
                                         height="600px",
                                         style={
