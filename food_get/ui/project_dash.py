@@ -237,7 +237,7 @@ def generate_layout(table_width):
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "Map Interaction: Viewers can toggle between options to switch between historical years.",
+                                        "Map Interaction: Viewers can toggle between options to switch between historical years and layer on low income.",
                                         style={"padding": "0.25in"},
                                     ),
                                 ],
@@ -290,12 +290,12 @@ def generate_layout(table_width):
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "This map shows",
+                                        "This map shows our project’s recreated metric that mimics the Food Atlas framing for access proportion by census tract including the lens of low income.",
                                         style={"padding": "0.25in"},
                                     ),
                                                                         html.Br(),
                                     html.P(
-                                        "Map interaction:",
+                                        "Map interaction: Viewers can see the state of the city post pandemic by interacting with map to see access proportion and layer on low income, or see the overall change in food access pre to post Covid-19. Location of grocery stores can be turned off or on and are indicated by blue dots. For 2022 Access Proportion and 2022 Access Proportion with Low Income, the darker the orange, the worse the income. Stripped tracts indicate low income. For the change in food access map, orange indicates a decrease in access, grey remains the same, and blue marks improvement in access.",
                                         style={"padding": "0.25in"},
                                     ),
                                 ],
@@ -343,17 +343,17 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "The goal of this project is to understand Chicago’s historical food access and recreate the Atlas food metric with data post-pandemic to better understand a more recent food landscape in Chicago.",
+                                        "The goal of this project is to understand Chicago’s historical food access and recreate the Atlas food metric with data post-pandemic to better understand a more recent food landscape in Chicago. The maps throughout this project reveal the majority of tracts throughout the city decreased in food access from pre to post pandemic. These insights have the potential to inform decision-makers on how to best resource the city and begin to narrate the impacts of pandemics on communities and their basic needs. A deeper analysis of this information would answer questions such as: 1. What was the average decrease in food access? 2. What’s the volatility of changes between the years visualized (ie are the trends always going up or down for a tract? 3. As communities continue to recover from the pandemic, has the city’s access to food improved?",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "This map compiles all the interactions from previous sections into one.",
+                                        "This map compiles all the interactions from previous sections into one. As a reminder, dark orange indicates worse food access, stripes mark low income tracts, blue dots are the locations of grocery stores. Notably for the change in food access map, orange reveals a decrease in access, grey remains the same, and blue represents improvement.",
                                         style={"padding": "0.25in"},
                                     ),
                                     html.Br(),
                                     html.P(
-                                        "Map interaction:",
+                                        "Map interaction: Viewers can move through time periods by selecting which year to investigate and select maps that have low income indicated. Grocery store locations can be turned off and on.",
                                         style={"padding": "0.25in"},
                                     ),
                                 ],

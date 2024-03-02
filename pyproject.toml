@@ -23,6 +23,7 @@ ipykernel = "^6.29.2"
 ruff = "^0.2.2"
 dash = "^2.15.0"
 pathlib = "^1.0.1"
+shapely = "^2.0.3"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.3"

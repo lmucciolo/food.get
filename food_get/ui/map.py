@@ -331,13 +331,13 @@ def map_2022_settings(metrics_df, grocery_df, m):
     tooltip_diff = folium.GeoJsonTooltip(
         fields=[
             "GEOID_TRACT_20",
-            "lapophalfshare_2010",
+            "lapophalfshare_2019",
             "lapophalfshare_2022",
             "10_22_diff",
         ],
         aliases=[
             "Tract Name:",
-            "2010 Low Access Proportion:",
+            "2019 Low Access Proportion:",
             "2022 Low Access Proportion:",
             "Change in Food Access 2010-2022:",
         ],
