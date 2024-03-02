@@ -338,29 +338,29 @@ def map_2022_settings(metrics_df, grocery_df, m):
         show=False,
     ).add_to(m)
 
-    # tooltip_22_lowi = folium.GeoJsonTooltip(
-    #     fields=["GEOID_TRACT_20", "lapophalfshare_2022"],
-    #     aliases=["Tract Name:", "2022 Low Access Proportion:"],
-    #     localize=True,
-    #     sticky=False,
-    #     labels=True,
-    #     style="""
-    # background-color: #F0EFEF;
-    # border: 2px solid black;
-    # border-radius: 3px;
-    # box-shadow: 3px;
-    # """,
-    #     max_width=800,
-    # )
+    tooltip_22_lowi = folium.GeoJsonTooltip(
+        fields=["GEOID_TRACT_20", "lapophalfshare_2022"],
+        aliases=["Tract Name:", "2022 Low Access Proportion:"],
+        localize=True,
+        sticky=False,
+        labels=True,
+        style="""
+    background-color: #F0EFEF;
+    border: 2px solid black;
+    border-radius: 3px;
+    box-shadow: 3px;
+    """,
+        max_width=800,
+    )
 
-    # folium.GeoJson(
-    #     metrics_df,
-    #     name="2022 Access Proportion",
-    #     style_function=style_function_2022_lowi,
-    #     tooltip=tooltip_22_lowi,
-    #     overlay=False,
-    #     show=False,
-    # ).add_to(m)
+    folium.GeoJson(
+        metrics_df,
+        name="2022 Access Proportion",
+        style_function=style_function_2022_lowi,
+        tooltip=tooltip_22_lowi,
+        overlay=False,
+        show=False,
+    ).add_to(m)
 
     tooltip_diff = folium.GeoJsonTooltip(
         fields=[
