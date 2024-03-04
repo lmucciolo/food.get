@@ -1,3 +1,13 @@
+"""
+Project: Analyzing food access and security in Chicago
+Team: food.get
+File Name: map.py
+Authors: Austin Steinhart
+
+Description:
+    This file creates teh maps used in the dash script using Folium.
+"""
+
 import folium
 from folium import plugins
 from food_get.analysis.agg_metrics import track_comparison_df

@@ -5,9 +5,11 @@ File Name: match_groceries.py
 Authors: Austin Steinhart
 
 Description:
-    This matches the Chicago grocery stores to the SNAP database
+    This file matches the Chicago grocery stores to the SNAP database
 """
+
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd

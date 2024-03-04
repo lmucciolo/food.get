@@ -2,14 +2,14 @@
 Project: Analyzing food access and security in Chicago
 Team: food.get
 File Name: extract_grocery.py
-Authors: Danielle Rosenthal and Stacy George
-Note: 
-    * Stacy created import_business_liscense_data and import_snap_retailers_data
+Authors: Stacy George
 
 Description:
     This file imports all the raw data from their source
 """
+
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd

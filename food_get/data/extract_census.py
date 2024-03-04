@@ -11,6 +11,7 @@ Description:
     This file scrapes the US Census 2022 5-Year Estimate Data Profiles tables.
 """
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import requests
@@ -74,7 +75,6 @@ def tract_level_extract(
     # If an entire table is requested, pull the entire table
     if table:
         if table.startswith("DP"):
-
             # If a county is not specified, we will look at all tracts within the given state
             if not county_code:
                 link = "https://api.census.gov/data/2022/acs/acs5/profile?get=group({})&for=tract:*&in=state:{}".format(

@@ -5,9 +5,12 @@ File Name: extract_tracts.py
 Authors: Austin Steinhart
 
 Description:
-    This file imports all the raw data from their source
+    This file imports census tract boundaries and created boundaries used for
+    metric and map generation. 
 """
+
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import requests

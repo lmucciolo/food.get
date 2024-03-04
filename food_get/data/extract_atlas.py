@@ -10,11 +10,13 @@ Description:
     visualization.
 """
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd
 import numpy as np
 import pathlib
+
 
 def import_atlas_data(export=False, years=["2010", "2015", "2019"]):
     """

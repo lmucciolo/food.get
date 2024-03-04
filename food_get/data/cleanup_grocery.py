@@ -3,13 +3,13 @@ Project: Analyzing food access and security in Chicago
 Team: food.get
 File Name: cleanup_grocery
 Authors: Stacy George
-Note: 
-    * Stacy created clean_business_license and clean_snap_retailer_data
 
 Description:
     This file cleans all the raw data
 """
+
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd

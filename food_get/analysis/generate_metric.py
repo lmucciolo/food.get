@@ -9,7 +9,9 @@ Note:
 Description:
     This file generates the low-access and low-income metrics by Census tract.
 """
+
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 from food_get.data.cleanup_grocery import clean_grocery_stores

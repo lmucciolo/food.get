@@ -3,14 +3,14 @@ Project: Analyzing food access and security in Chicago
 Team: food.get
 File Name: agg_metrics.py
 Authors: Austin Steinhart
-Note: 
-    * Austin created all functions below.
 
 Description:
     This file generates DataFrames of the combined metrics and grocery stores 
     for use in the map.
 """
+
 import warnings
+
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import geopandas as gpd
