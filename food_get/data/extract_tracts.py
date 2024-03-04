@@ -7,6 +7,8 @@ Authors: Austin Steinhart
 Description:
     This file imports all the raw data from their source
 """
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import requests
 import io

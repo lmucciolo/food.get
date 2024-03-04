@@ -7,6 +7,8 @@ Authors: Austin Steinhart
 Description:
     This matches the Chicago grocery stores to the SNAP database
 """
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd
 from math import asin, sqrt, cos, sin, radians

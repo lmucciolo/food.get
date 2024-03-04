@@ -9,9 +9,8 @@ Note:
 Description:
     This file cleans all the raw data
 """
-
-# cleanup_sg
-# cleanup_grocery
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd
 import pathlib

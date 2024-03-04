@@ -10,14 +10,12 @@ Notes:
 Description:
     This file scrapes the US Census 2022 5-Year Estimate Data Profiles tables.
 """
-
 import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
-warnings.simplefilter(actions="ignore", category=FutureWarning)
 import requests
 import pandas as pd
 import pathlib
-from lxml import html
 import json
 
 illinois_counties = pd.read_csv(

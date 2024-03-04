@@ -9,12 +9,12 @@ Description:
     and combines them into one dataframe based on what is required for the map
     visualization.
 """
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd
 import numpy as np
-import requests
 import pathlib
-
 
 def import_atlas_data(export=False, years=["2010", "2015", "2019"]):
     """

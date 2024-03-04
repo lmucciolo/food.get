@@ -10,6 +10,8 @@ Description:
     This file generates DataFrames of the combined metrics and grocery stores 
     for use in the map.
 """
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import geopandas as gpd
 import numpy as np

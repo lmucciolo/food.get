@@ -9,6 +9,8 @@ Note:
 Description:
     This file imports all the raw data from their source
 """
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import pandas as pd
 import requests
