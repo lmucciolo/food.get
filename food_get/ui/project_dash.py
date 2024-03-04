@@ -418,7 +418,7 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "The goal of this project is to understand Chicago’s historical food access and recreate the Atlas food metric with data post-pandemic to better understand the recent food landscape in Chicago. The maps throughout this project reveal the majority of tracts throughout the city decreased in food access from pre- to post-pandemic. These insights have the potential to inform decision-makers on how to best resource the city and begin to narrate the impacts of pandemics on communities and their basic needs. A deeper analysis of this information would answer questions such as: 1) What was the average decrease in food access? 2) What’s the volatility of changes between the years visualized (i.e., are the trends always going up or down for a tract? 3) As communities continue to recover from the pandemic, has the city’s access to food improved?",
+                                        "The goal of this project is to understand Chicago’s historical food access and to construct an updated Atlas food metric with data post-pandemic to better understand the recent food access landscape in Chicago. This project functions as an exploratory tool to understand current and historic food access in the city. Initial analysis of the data shows that food access has significantly decreased after the pandemic and the divide between low-income tracts and not has increased across the last decade, especially since the pandemic. A deeper analysis of this information would answer questions such as: 1) What was the average decrease in food access? 2) What’s the volatility of changes between the years visualized (i.e., are the trends always going up or down for a tract? 3) As communities continue to recover from the pandemic, has the city’s access to food improved? 4) Have low-income tracks seen unique trends in changes in food access as compared to non-low-income tracks? The project team completed all stated goals for data ingestion, cleaning, recreating, and visualizing within a user-friendly web-based application. However, the project ultimately serves more as an exploratory tool rather than providing deep insight using the data. We had hoped to provide more interpretation using the created metric but were not able to complete this additional analysis. Nevertheless, we believe the completed aspects of the project serve as a solid foundation to build upon this work. Overall, this project provides valuable insights into Chicago’s food accessibility. These insights have the potential to inform decision-makers on how to best resource the city and begin to narrate the impacts of pandemics on communities and their basic needs.",
                                         style={
                                             "padding": "0.25in",
                                             "margin-bottom": "0em",
@@ -447,7 +447,7 @@ def generate_layout(table_width):
                                 ],
                                 style={
                                     "width": "40%",
-                                    "height": "600px",
+                                    "max-height": "600px",
                                     "overflow": "auto",
                                     "float": "left",
                                     "background-color": colors()["g2_color"],
