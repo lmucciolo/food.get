@@ -427,7 +427,7 @@ def generate_layout(table_width):
                                         },
                                     ),
                                     html.P(
-                                        "This map compiles all the interactions from previous sections into one. As a reminder, dark orange indicates worse food access, stripes mark low-income tracts, and blue dots are the locations of grocery stores in 2022. Notably for the change in the food access map, orange reveals a decrease in access, grey remains the same, and blue represents an improvement.",
+                                        "This map compiles all the interactions from previous sections into one. As a reminder, dark color indicates worse food access, stripes mark low-income tracts, and blue dots are the locations of grocery stores in 2022. Notably for the change in the food access map, orange reveals a decrease in access, grey remains the same, and blue represents an improvement.",
                                         style={
                                             "padding": "0.25in",
                                             "margin-bottom": "0em",
