@@ -1,4 +1,3 @@
-*This README.md file was generated on 03-02-24 by Livia Mucciolo*
 # food.get
 The project aims to analyze food access within the Chicago area. The scope of this work
 provides an updated food access metric for 2022 to understand communities’ post-pandemic
