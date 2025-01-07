@@ -1,6 +1,34 @@
-*This README.md file was generated on 03-02-24 by Livia Mucciolo*
 # food.get
-The project aims to analyze food access within the Chicago area. We provide an updated food access metric for 2022 to understand Chicago’s post-pandemic food access and to show how food access has changed in the city over time.
+The project aims to analyze food access within the Chicago area. The scope of this work
+provides an updated food access metric for 2022 to understand communities’ post-pandemic
+food access and shows how food access has changed in the city over time. The Atlas Food
+Access Research data from 2010, 2015, and 2019 is used as a historic food access metric. To
+recreate the 2022 metric, grocery store data from the City of Chicago are paired with household
+income information from the United States Census. For understanding and consumption, the
+project findings are presented in a Dash web application containing several interactive maps
+using Folium.
+
+<img src="food_get/static/food_get_ui.png" alt="food_get_ui" width="800"/>
+
+## Structure of Software
+This project is structured in the following sections:
+* Data (/data)
+  * Data Extraction
+    * Pulls grocery stores from City of Chicago and SNAP retailers (/extract_grocery.py)
+    * Pulls in and combines historic USDA Food Atlas Research data (/extract_atlas.py)
+    * Pulls in census tract boundaries (/extract_tracts.py)
+    * Pulls in census tract income and population metrics (/extract_census.py)
+  * Cleaning
+    * Cleaning grocery stores from City of Chicago and SNAP(cleanup_grocery.py)
+    * Adds SNAP information to grocery store locations (match_groceries.py)
+* Analysis (/analysis)
+  * Recreate Food Atlas metric for 2022 (/generate_metric.py)
+  * Generates DataFrames of the combined metrics and grocery stores for use in the map (/agg_metrics.py)
+* UI (/ui)
+  * Creates maps (/map.py)
+  * Creates Dash application (/dash.py)
+* Tests (/tests)
+
 
 ## Authors
 - [Austin Steinhart](https://github.com/Asteinhart)
@@ -12,11 +40,7 @@ The project aims to analyze food access within the Chicago area. We provide an u
 
 1. [Install Poetry to Local Machine](https://python-poetry.org/docs/)
 
-2. Clone the Project Repository via SSH
-
-```bash
-git@github.com:uchicago-capp122-spring24/food.get.git
-```
+2. Clone the Project 
 
 3. Install Virtual Environment and Dependencies
 
@@ -42,7 +66,7 @@ python -m food_get
 <br />
 <br />
 
-You are then given an HTTP link, as seen below. Copy the link into your preferred browser to interact with the webpage.
+You are then given an HTTP link, as seen below. Copy the link into your preferred browser to interact with the webpage locally.
 <br />
 
 ```bash
